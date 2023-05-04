@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Articulo;
+use App\Http\Requests\MarcaRequest;
+use App\Models\Marca;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Http\Requests\ArticuloRequest;
 use Illuminate\Http\Request;
 
-
-class ArticuloController extends Controller
+class MarcaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,11 +17,22 @@ class ArticuloController extends Controller
      */
     public function index()
     {
+        $marcas = Marca::all();
+        $count  = $marcas->count();
 
-        //$articulos = Articulo::paginate(5);
-
-        $articulos = Articulo::all();
-        return $articulos;
+        if( $count > 0 ){
+            return response()->json([
+                "msg"=>"Listado de Marcas",
+                "status"=>true,
+                "count" => $count,
+                "data"  => $marcas
+            ],200);
+        }else{
+            return response()->json([
+                "msg"=>"No existen registros de Marcas",
+                "status"=>false,
+            ],404);
+        }
     }
 
     /**
@@ -41,22 +51,17 @@ class ArticuloController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ArticuloRequest $request)
+    public function store(MarcaRequest $request)
     {
-
-
-        /*$articulo = new Articulo();
-        $articulo->nombre      = $request->nombre;
-        $articulo->descripcion = $request->descripcion;
-        $articulo->save();*/
-
-        $data = $request->all();
-        Articulo::create($data);
+        $data     = $request->all();
+        $registro = Marca::create($data);
 
         return response()->json([
             "status" => 1,
-            "msg" => "¡Registro de articulo exitoso!",
+            "msg"    => "¡Registro de marca exitoso!",
+            "data"   => $registro
         ]);
+
     }
 
     /**
@@ -65,30 +70,21 @@ class ArticuloController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show( $id )
+    public function show($id)
     {
-        /*if( !is_numeric($id))
-
-        return response()->json([
-            "status" => false,
-            "msg" => "El ID debe ser numerico",
-        ],404);*/
-
-        try
-        {
-            $articulo = Articulo::findOrFail($id);
-            return $articulo;
-        }
-        // catch(Exception $e) catch any exception
-        catch(ModelNotFoundException $e)
-        {
+        try{
+            return response()->json([
+                "status" => true,
+                "data"   => Marca::findOrFail($id)
+            ],200);
+        }catch(ModelNotFoundException $e){
 
             return response()->json([
                 "status" => false,
-                "msg" => "Articulo No encontrado",
+                "data"   => null,
+                "msg"    => "No existe marca con el ID ".$id
             ],404);
         }
-
     }
 
     /**
@@ -99,7 +95,8 @@ class ArticuloController extends Controller
      */
     public function edit($id)
     {
-        //
+
+
     }
 
     /**
@@ -109,25 +106,30 @@ class ArticuloController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ArticuloRequest $request, $id )
+    public function update(MarcaRequest $request, $id)
     {
-
+        if ( count( $request->all() ) === 0 ){
+            return response()->json([
+                "status" => false,
+                "msg" => " No se ha enviado ningun parametro valido",
+                ],404);
+        }
         try{
-            $articulo = Articulo::findOrFail($id);
+            $marca = Marca::findOrFail($id);
 
-            if( $articulo->update($request->all()) ){
+            if( $marca->update($request->all()) ){
 
                 return response()->json([
                     "status" => true,
-                    "msg" => "Arciculo Actualizado",
-                    "articulo" => $articulo
+                    "msg" => "Marca Actualizada",
+                    "articulo" => $marca
                 ]);
 
             }else{
 
                 return response()->json([
                     "status" => false,
-                    "msg" => "Error al actualizar el articulo",
+                    "msg" => "Error al actualizar la Marca",
                 ],400);
             }
         }
@@ -135,10 +137,9 @@ class ArticuloController extends Controller
         {
             return response()->json([
                 "status" => false,
-                "msg" => "Articulo No encontrado",
+                "msg" => "Marca No encontrada",
             ],404);
         }
-
     }
 
     /**

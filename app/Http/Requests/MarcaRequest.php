@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 
-class ArticuloStroreRequest extends FormRequest
+class MarcaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +14,7 @@ class ArticuloStroreRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -30,8 +30,8 @@ class ArticuloStroreRequest extends FormRequest
                 'descripcion' => 'required'
             ],
             'PUT' => [
-                'id'          => 'required|int|exists:articulos,id',
-                'nombre'      => 'string,unique:articulos',
+                //'id'          => 'required|int|exists:articulos,id',
+                'nombre'      => 'string|unique:marcas',
                 'descripcion' => 'string|nullable'
               ]
         };
