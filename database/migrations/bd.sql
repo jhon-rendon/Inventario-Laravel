@@ -87,3 +87,9 @@ INSERT INTO articulos (nombre) VALUES( 'Convertidor Manhattan');
 INSERT INTO articulos (nombre) VALUES( 'Microsoft');
 
 
+
+Insert into SYSTEM.ESTADO_ARTICULO (ID,ESTADO,CREATED_AT,UPDATED_AT) values ('1','Nuevo',null,null);
+Insert into SYSTEM.ESTADO_ARTICULO (ID,ESTADO,CREATED_AT,UPDATED_AT) values ('2','Usado',null,null);
+Insert into SYSTEM.ESTADO_ARTICULO (ID,ESTADO,CREATED_AT,UPDATED_AT) values ('3','Reparado',null,null);
+Insert into SYSTEM.ESTADO_ARTICULO (ID,ESTADO,CREATED_AT,UPDATED_AT) values ('4','Baja',null,null);
+
