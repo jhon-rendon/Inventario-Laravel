@@ -15,7 +15,8 @@ class CreateUbicacionTable extends Migration
     {
         Schema::create('ubicacion', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre')->require();
+            $table->string('nombre');
+            $table->string('codigo')->nullable()->unique();
             $table->string('direccion')->nullable();
             $table->date('fecha_final')->nullable();
 
