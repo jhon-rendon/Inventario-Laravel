@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Articulo;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Http\Requests\ArticuloRequest;
-use Illuminate\Http\Request;
+use App\Http\Requests\CategoriaArticuloRequest;
+use App\Models\CategoriaArticulo;
+use Illuminate\Support\Facades\Gate;
 
 
-class ArticuloController extends Controller
+class CategoriaArticuloController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,10 +18,11 @@ class ArticuloController extends Controller
      */
     public function index()
     {
+       // abort_if(Gate::denies('articulo_index'), 403);
 
         //$articulos = Articulo::paginate(5);
 
-        $articulos = Articulo::all();
+        $articulos = CategoriaArticulo::all();
         return $articulos;
     }
 
@@ -41,7 +42,7 @@ class ArticuloController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ArticuloRequest $request)
+    public function store(CategoriaArticuloRequest $request)
     {
 
 
@@ -51,7 +52,7 @@ class ArticuloController extends Controller
         $articulo->save();*/
 
         $data = $request->all();
-        Articulo::create($data);
+        CategoriaArticulo::create($data);
 
         return response()->json([
             "status" => 1,
@@ -76,7 +77,7 @@ class ArticuloController extends Controller
 
         try
         {
-            $articulo = Articulo::findOrFail($id);
+            $articulo = CategoriaArticulo::findOrFail($id);
             return $articulo;
         }
         // catch(Exception $e) catch any exception
@@ -109,11 +110,11 @@ class ArticuloController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ArticuloRequest $request, $id )
+    public function update(CategoriaArticuloRequest $request, $id )
     {
 
         try{
-            $articulo = Articulo::findOrFail($id);
+            $articulo = CategoriaArticulo::findOrFail($id);
 
             if( $articulo->update($request->all()) ){
 

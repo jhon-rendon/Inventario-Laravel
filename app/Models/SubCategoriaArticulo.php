@@ -8,12 +8,17 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 
-class Articulo extends Model
+class SubCategoriaArticulo extends Model
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+
+    protected $table = "subcategoria_articulos";
+
     protected $fillable = [
         'nombre',
-        'descripcion'
+        'descripcion',
+        'tipo_cantidad',
+        'categoria_articulos_id'
     ];
 }
