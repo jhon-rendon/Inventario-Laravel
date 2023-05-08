@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use APP\Http\Helpers\Helper;
+use APP\Helpers\Helper;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 

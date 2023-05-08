@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Api\CategoriaArticuloController;
 use App\Http\Controllers\Api\MarcaController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\SubcategoriaArticuloController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 
@@ -18,9 +18,9 @@ use App\Http\Controllers\Api\UserController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('user', function (Request $request) {
+/*Route::middleware('auth:sanctum')->get('user', function (Request $request) {
     return $request->user();
-});
+});*/
 
 
 Route::post('/auth/register', [UserController::class, 'register']);
@@ -30,7 +30,9 @@ Route::get('datos',function(){
 });
 
 
-Route::group( ['middleware' => ["auth:sanctum"]], function(){
+Route::group( ['middleware' => ["token.validation",]], function(){
+
+
     //rutas
     Route::get('user-profile', [UserController::class, 'userProfile']);
     Route::get('/auth/logout', [UserController::class, 'logout']);
@@ -38,22 +40,31 @@ Route::group( ['middleware' => ["auth:sanctum"]], function(){
 
 
 
-    Route::prefix("articulos")->group( function(){
+    Route::prefix("categoria_articulos")->group( function(){
 
-       Route::middleware(['role_or_permission:articulo_show'])->get('/',[CategoriaArticuloController::class,"index"]);
-
-
-        //Route::get("/",[CategoriaArticuloController::class,"index"])->middleware(['permission:prueba']);
+      //Route::middleware(['role_or_permission:articulo_show'])->get('/',[CategoriaArticuloController::class,"index"]);
+        Route::get("/",[CategoriaArticuloController::class,"index"]);
         Route::get("/{id}",[CategoriaArticuloController::class,"show"])->where(['id' => '[0-9]+']);
         Route::put("/{id}",[CategoriaArticuloController::class,"update"])->where(['id' => '[0-9]+']);
         Route::post("/",[CategoriaArticuloController::class,"store"]);
 
     });
 
+    Route::prefix("subcategoria_articulos")->group( function(){
+
+        //Route::middleware(['role_or_permission:articulo_show'])->get('/',[CategoriaArticuloController::class,"index"]);
+          Route::get("/",[SubcategoriaArticuloController::class,"index"]);
+          Route::get("/{id}",[SubcategoriaArticuloController::class,"show"])->where(['id' => '[0-9]+']);
+          Route::put("/{id}",[SubcategoriaArticuloController::class,"update"])->where(['id' => '[0-9]+']);
+          Route::post("/",[SubcategoriaArticuloController::class,"store"]);
+
+    });
+
+
     Route::prefix("marcas")->group( function(){
         Route::get("/",[MarcaController::class,"index"]);
         Route::get("/{id}",[MarcaController::class,"show"])->where(['id' => '[0-9]+']);
-        Route::put("/{id}",[MarcaController::class,"update"])->where(['id' => '[0-9]+']);
+        Route::put("/{id}",[MarcaController::class,"update"]);//->where(['id' => '[0-9]+']);
         Route::post("/",[MarcaController::class,"store"]);
 
     });
@@ -61,13 +72,19 @@ Route::group( ['middleware' => ["auth:sanctum"]], function(){
 
 
 
+Route::fallback(function ($ruta) {
+    return response()->json([
+        "status" => false,
+        "msg" => "La ruta  ".$ruta." No existe",
+    ],404);
+});
 
-Route::any('/{any}', function ($any) {
+/*Route::any('/{any}', function ($any) {
     //abort(404, "La ruta '$any' no existe.");
     return response()->json([
         "status" => false,
         "msg" => "La ruta  ".$any." No existe",
     ],404);
-})->where('any', '.*');
+})->where('any', '.*');*/
 
 

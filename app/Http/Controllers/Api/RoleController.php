@@ -14,13 +14,25 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    function __construct()
+    {
+         $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => ['index','store']]);
+         $this->middleware('permission:role-create', ['only' => ['create','store']]);
+         $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:role-delete', ['only' => ['destroy']]);
+    }
+
     public function index()
     {
-        abort_if(Gate::denies('role_index'), 403);
+        $roles = Role::orderBy('id','DESC')->paginate(5);
 
-        $roles = Role::paginate(10);
+        return $roles;
+        //abort_if(Gate::denies('role_index'), 403);
 
-        return view('roles.index', compact('roles'));
+        //$roles = Role::paginate(10);
+
+        //return view('roles.index', compact('roles'));
     }
 
     /**
@@ -30,11 +42,13 @@ class RoleController extends Controller
      */
     public function create()
     {
-        abort_if(Gate::denies('role_create'), 403);
+        //abort_if(Gate::denies('role_create'), 403);
 
         $permissions = Permission::all()->pluck('name', 'id');
+        $permission = Permission::get();
+        return $permission;
         // dd($permissions);
-        return view('roles.create', compact('permissions'));
+       // return view('roles.create', compact('permissions'));
     }
 
     /**
@@ -45,12 +59,21 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'name' => 'required|unique:roles,name',
+            'permission' => 'required',
+        ]);
+
         $role = Role::create($request->only('name'));
 
         // $role->permissions()->sync($request->input('permissions', []));
         $role->syncPermissions($request->input('permissions', []));
 
-        return redirect()->route('roles.index');
+
+        //$role = Role::create(['name' => $request->input('name')]);
+        //$role->syncPermissions($request->input('permission'));
+
+        //return redirect()->route('roles.index');
     }
 
     /**
@@ -61,10 +84,14 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
-        abort_if(Gate::denies('role_show'), 403);
+        //abort_if(Gate::denies('role_show'), 403);
 
         $role->load('permissions');
-        return view('roles.show', compact('role'));
+       /* $role = Role::find($id);
+        $rolePermissions = Permission::join("role_has_permissions","role_has_permissions.permission_id","=","permissions.id")
+            ->where("role_has_permissions.role_id",$id)
+            ->get();*/
+        //return view('roles.show', compact('role'));
     }
 
     /**
@@ -79,8 +106,14 @@ class RoleController extends Controller
 
         $permissions = Permission::all()->pluck('name', 'id');
         $role->load('permissions');
+
+        /*$role = Role::find($id);
+        $permission = Permission::get();
+        $rolePermissions = DB::table("role_has_permissions")->where("role_has_permissions.role_id",$id)
+            ->pluck('role_has_permissions.permission_id','role_has_permissions.permission_id')
+            ->all();*/
         // dd($role);
-        return view('roles.edit', compact('role', 'permissions'));
+        //return view('roles.edit', compact('role', 'permissions'));
     }
 
     /**
@@ -97,7 +130,17 @@ class RoleController extends Controller
         // $role->permissions()->sync($request->input('permissions', []));
         $role->syncPermissions($request->input('permissions', []));
 
-        return redirect()->route('roles.index');
+        //return redirect()->route('roles.index');
+        /*$this->validate($request, [
+            'name' => 'required',
+            'permission' => 'required',
+        ]);*/
+
+        /*$role = Role::find($id);
+        $role->name = $request->input('name');
+        $role->save();
+
+        $role->syncPermissions($request->input('permission'));*/
     }
 
     /**
@@ -108,10 +151,11 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        abort_if(Gate::denies('role_delete'), 403);
+        //abort_if(Gate::denies('role_delete'), 403);
 
         $role->delete();
 
-        return redirect()->route('roles.index');
+        //DB::table("roles")->where('id',$id)->delete();
+        //return redirect()->route('roles.index');
     }
 }

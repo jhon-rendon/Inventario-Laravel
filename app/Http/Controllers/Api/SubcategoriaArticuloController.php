@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SubcategoriaArticuloRequest;
+use App\Models\SubCategoriaArticulo;
 use Illuminate\Http\Request;
 
 class SubcategoriaArticuloController extends Controller
@@ -33,9 +35,23 @@ class SubcategoriaArticuloController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SubcategoriaArticuloRequest $request)
     {
-        //
+
+        //$data = $request->all();
+        $subcategoria = new SubCategoriaArticulo();
+        $subcategoria->nombre                   = $request->input('nombre');
+        $subcategoria->descripcion              = $request->input('descripcion');
+        $subcategoria->categoria_articulos_id   = $request->input('categoria');
+        $subcategoria->tipo_cantidad            = $request->input('tipo_cantidad');
+        $subcategoria->save();
+
+        //SubCategoriaArticulo::create($data);
+
+        return response()->json([
+            "success" => true,
+            "message" => "¡Registro de Subcategoria exitosa!",
+        ]);
     }
 
     /**

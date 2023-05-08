@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Requests\CategoriaArticuloRequest;
 use App\Models\CategoriaArticulo;
-use Illuminate\Support\Facades\Gate;
 
 
 class CategoriaArticuloController extends Controller
@@ -16,6 +15,22 @@ class CategoriaArticuloController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct()
+    {
+
+       /*$this->middleware('role_or_permission:articulo_index', ['only' => ['index']]);
+       $this->middleware('role_or_permission:articulo_create', ['only' => ['store']]);
+       $this->middleware('role_or_permission:articulo_show', ['only' => ['show']]);
+       $this->middleware('role_or_permission:articulo_edit', ['only' => ['update']]);*/
+
+
+       /*$this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => ['index','store']]);
+       $this->middleware('permission:role-create', ['only' => ['create','store']]);
+       $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
+       $this->middleware('permission:role-delete', ['only' => ['destroy']]);*/
+    }
+
     public function index()
     {
        // abort_if(Gate::denies('articulo_index'), 403);
@@ -55,8 +70,8 @@ class CategoriaArticuloController extends Controller
         CategoriaArticulo::create($data);
 
         return response()->json([
-            "status" => 1,
-            "msg" => "¡Registro de articulo exitoso!",
+            "success" => true,
+            "message" => "¡Registro de articulo exitoso!",
         ]);
     }
 
@@ -75,6 +90,7 @@ class CategoriaArticuloController extends Controller
             "msg" => "El ID debe ser numerico",
         ],404);*/
 
+
         try
         {
             $articulo = CategoriaArticulo::findOrFail($id);
@@ -85,8 +101,8 @@ class CategoriaArticuloController extends Controller
         {
 
             return response()->json([
-                "status" => false,
-                "msg" => "Articulo No encontrado",
+                "success" => false,
+                "message" => "Articulo No encontrado",
             ],404);
         }
 
@@ -119,24 +135,24 @@ class CategoriaArticuloController extends Controller
             if( $articulo->update($request->all()) ){
 
                 return response()->json([
-                    "status" => true,
-                    "msg" => "Arciculo Actualizado",
-                    "articulo" => $articulo
+                    "success" => true,
+                    "message" => "Arciculo Actualizado",
+                    "data" => $articulo
                 ]);
 
             }else{
 
                 return response()->json([
-                    "status" => false,
-                    "msg" => "Error al actualizar el articulo",
+                    "success" => false,
+                    "message" => "Error al actualizar el articulo",
                 ],400);
             }
         }
         catch(ModelNotFoundException $e)
         {
             return response()->json([
-                "status" => false,
-                "msg" => "Articulo No encontrado",
+                "success" => false,
+                "message" => "Articulo No encontrado",
             ],404);
         }
 

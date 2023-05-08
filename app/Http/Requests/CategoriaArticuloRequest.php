@@ -25,12 +25,12 @@ class CategoriaArticuloRequest extends FormRequest
     {
         return match( $this->method() ){
             'POST'=> [
-                'nombre'      => 'required|unique:articulos',
+                'nombre'      => 'required|unique:categoria_articulos',
                 'descripcion' => 'required'
             ],
             'PUT' => [
                 //'id'          => 'required|int|exists:articulos,id',
-                'nombre'      => 'string|unique:articulos',
+                'nombre'      => 'string|unique:categoria_articulos',
                 'descripcion' => 'required|string'
             ]
         };

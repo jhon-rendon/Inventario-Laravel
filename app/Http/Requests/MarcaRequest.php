@@ -26,11 +26,11 @@ class MarcaRequest extends FormRequest
     {
         return match( $this->method() ){
             'POST'=> [
-                'nombre'      => 'required|unique:articulos',
+                'nombre'      => 'required|unique:marcas',
                 'descripcion' => 'required'
             ],
             'PUT' => [
-                //'id'          => 'required|int|exists:articulos,id',
+                //'id'          => 'required|int|exists:marcas,id',
                 'nombre'      => 'string|unique:marcas',
                 'descripcion' => 'string|nullable'
               ]

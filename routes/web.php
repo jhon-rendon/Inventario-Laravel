@@ -25,6 +25,13 @@ Route::get('/datos',function(){
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+
+Route::fallback(function ($ruta) {
+    return response()->json([
+        "status" => false,
+        "msg" => "La ruta  ".$ruta." No existe",
+    ],404);
+});
 /*Route::view('/{any}','home')
     ->middleware('auth')
     ->where('any','.*');*/

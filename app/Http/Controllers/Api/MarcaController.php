@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+
 use App\Http\Controllers\Controller;
+use APP\Helpers\Helper as Helper;
 use App\Http\Requests\MarcaRequest;
 use App\Models\Marca;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 
 class MarcaController extends Controller
 {
@@ -22,15 +23,15 @@ class MarcaController extends Controller
 
         if( $count > 0 ){
             return response()->json([
-                "msg"=>"Listado de Marcas",
-                "status"=>true,
-                "count" => $count,
-                "data"  => $marcas
+                "message" =>"Listado de Marcas",
+                "success" => true,
+                "count"   => $count,
+                "data"    => $marcas
             ],200);
         }else{
             return response()->json([
-                "msg"=>"No existen registros de Marcas",
-                "status"=>false,
+                "message"  =>  "No existen registros de Marcas",
+                "success"  =>  false,
             ],404);
         }
     }
@@ -57,9 +58,9 @@ class MarcaController extends Controller
         $registro = Marca::create($data);
 
         return response()->json([
-            "status" => 1,
-            "msg"    => "¡Registro de marca exitoso!",
-            "data"   => $registro
+            "success" => 1,
+            "message" => "¡Registro de marca exitoso!",
+            "data"    => $registro
         ]);
 
     }
@@ -74,15 +75,16 @@ class MarcaController extends Controller
     {
         try{
             return response()->json([
-                "status" => true,
-                "data"   => Marca::findOrFail($id)
+                "success" => true,
+                "message" => "Listado de Marca ",
+                "data"    => Marca::findOrFail($id)
             ],200);
         }catch(ModelNotFoundException $e){
 
             return response()->json([
-                "status" => false,
-                "data"   => null,
-                "msg"    => "No existe marca con el ID ".$id
+                "success" => false,
+                "data"    => null,
+                "message" => "No existe marca con el ID ".$id
             ],404);
         }
     }
@@ -108,36 +110,49 @@ class MarcaController extends Controller
      */
     public function update(MarcaRequest $request, $id)
     {
-        if ( count( $request->all() ) === 0 ){
+
+       $input = $request->only(['nombre', 'descripcion']);
+       Helper::sendErrorUpdate( $id, $request, $input );
+
+       /* if( !is_numeric($id) ){
             return response()->json([
-                "status" => false,
-                "msg" => " No se ha enviado ningun parametro valido",
+                "success" => false,
+                "message" => " El parametro Id de la marca debe ser numerico ",
                 ],404);
         }
+
+        if ( count( $request->all() ) === 0 || !$input || count( $input ) === 0  ){
+            return response()->json([
+                "success" => false,
+                "message" => "Parametros no validos",
+                ],404);
+        }*/
+
+
         try{
             $marca = Marca::findOrFail($id);
 
-            if( $marca->update($request->all()) ){
+            if( $marca->update( $input ) ){
 
                 return response()->json([
-                    "status" => true,
-                    "msg" => "Marca Actualizada",
-                    "articulo" => $marca
+                    "success" => true,
+                    "message" => "Marca Actualizada",
+                    "data"    => $marca
                 ]);
 
             }else{
 
                 return response()->json([
-                    "status" => false,
-                    "msg" => "Error al actualizar la Marca",
+                    "success" => false,
+                    "message" => "Error al actualizar la Marca",
                 ],400);
             }
         }
         catch(ModelNotFoundException $e)
         {
             return response()->json([
-                "status" => false,
-                "msg" => "Marca No encontrada",
+                "success" => false,
+                "message" => "Marca No encontrada",
             ],404);
         }
     }

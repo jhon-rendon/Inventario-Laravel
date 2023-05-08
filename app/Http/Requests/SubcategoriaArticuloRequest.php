@@ -13,9 +13,15 @@ class SubcategoriaArticuloRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
+    /*protected function prepareForValidation()
+    {
+        $this->merge([
+        'slug' => Str::slug($this->slug),
+        ]);
+    }*/
     /**
      * Get the validation rules that apply to the request.
      *
@@ -23,8 +29,19 @@ class SubcategoriaArticuloRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        return match( $this->method() ){
+            'POST'=> [
+                'nombre'       => 'required|max:255|unique:subcategoria_articulos',
+                'descripcion'  => 'string|nullable',
+                'categoria'    => 'required|integer|exists:App\Models\CategoriaArticulo,id',
+                'tipo_cantidad'=> 'required|string|in:lote,unidad'
+
+            ],
+            'PUT' => [
+                //'id'          => 'required|int|exists:articulos,id',
+                'nombre'      => 'string|unique:subcategoria_articulos',
+                'descripcion' => 'required|string'
+            ]
+        };
     }
 }
