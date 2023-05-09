@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('home');
 });
 
@@ -24,14 +24,19 @@ Route::get('/datos',function(){
 //Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+*/
+
+Route::get('/{any}', function () {
+    return view('app');
+})->where('any', '.*');
 
 
-Route::fallback(function ($ruta) {
+/*Route::fallback(function ($ruta) {
     return response()->json([
         "status" => false,
         "msg" => "La ruta  ".$ruta." No existe",
     ],404);
-});
+});*/
 /*Route::view('/{any}','home')
     ->middleware('auth')
     ->where('any','.*');*/

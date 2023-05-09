@@ -13,7 +13,7 @@ class EstadoArticuloRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +23,13 @@ class EstadoArticuloRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        return match( $this->method() ){
+            'POST'=> [
+                'estado'   => 'required|unique:estado_articulo',
+            ],
+            'PUT' => [
+                'estado'   => 'required|unique:estado_articulo,estado,'.$this->estado_articulo.'',
+            ]
+        };
     }
 }

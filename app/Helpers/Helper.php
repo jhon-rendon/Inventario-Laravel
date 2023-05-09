@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Symfony\Component\Console\Input\Input;
 
 class Helper {
 
@@ -29,7 +30,7 @@ class Helper {
         );
     }
 
-    if ( count( $request->all() ) === 0 || !$input || count( $input ) === 0  ){
+    if ( count( $request->all() ) === 0  || !$input || count( $input ) === 0 ){
         throw new HttpResponseException(
             response()->json([
             "success" => false,
@@ -37,6 +38,34 @@ class Helper {
             ],401)
         );
     }
+
+    /*if( is_array( $input ) && count( $input ) > 0){
+
+        $campoNotNull = false;
+
+        foreach( $input as  $valor ){
+            if( $valor !== null ){
+                $campoNotNull = true;
+                //break;
+            }
+            throw new HttpResponseException(
+                response()->json([
+                "success" => false,
+                "valor" => $valor,
+                "message" => "Parametros no validos",
+                ],401)
+            );
+        }*/
+
+        /*if( !$campoNotNull ){
+            throw new HttpResponseException(
+                response()->json([
+                "success" => false,
+                "message" => "Parametros no validos",
+                ],401)
+            );
+        }*/
+
 
    }
 

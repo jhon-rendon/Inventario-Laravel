@@ -1,8 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
+use App\Helpers\Helper;
+use App\Http\Requests\UbicacionRequest;
+use App\Models\Ubicacion;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Http\Controllers\Controller;
+
 
 class UbicacionController extends Controller
 {
@@ -13,7 +18,8 @@ class UbicacionController extends Controller
      */
     public function index()
     {
-        //
+        $ubicacion =  Ubicacion::all();
+        return $ubicacion;
     }
 
     /**
@@ -32,9 +38,15 @@ class UbicacionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UbicacionRequest $request)
     {
-        //
+        $data = $request->all();
+        Ubicacion::create($data);
+
+        return response()->json([
+            "success" => true,
+            "message" => "¡Registro ubicación exitoso!",
+        ]);
     }
 
     /**
@@ -45,7 +57,21 @@ class UbicacionController extends Controller
      */
     public function show($id)
     {
-        //
+        Helper::sendErrorShow($id);
+        try{
+            return response()->json([
+                "success" => true,
+                "message" => "Listado de ubicacion",
+                "data"    => Ubicacion::findOrFail($id)
+            ],200);
+        }catch(ModelNotFoundException $e){
+
+            return response()->json([
+                "success" => false,
+                "data"    => null,
+                "message" => "No existe la ubicacion con el ID ".$id
+            ],404);
+        }
     }
 
     /**
@@ -66,9 +92,39 @@ class UbicacionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UbicacionRequest $request, $id)
     {
-        //
+
+        $input = $request->only(['nombre','codigo','direccion','tipo_ubicacion_id']);
+        Helper::sendErrorUpdate( $id, $request, $input );
+
+        $text = "Ubicación";
+        try{
+            $marca = Ubicacion::findOrFail($id);
+
+            if( $marca->update( $input ) ){
+
+                return response()->json([
+                    "success" => true,
+                    "message" => $text." Actualizada",
+                    "data"    => $marca
+                ]);
+
+            }else{
+
+                return response()->json([
+                    "success" => false,
+                    "message" => "Error al actualizar el ".$text,
+                ],400);
+            }
+        }
+        catch(ModelNotFoundException $e)
+        {
+            return response()->json([
+                "success" => false,
+                "message" => $text." No encontrada",
+            ],404);
+        }
     }
 
     /**

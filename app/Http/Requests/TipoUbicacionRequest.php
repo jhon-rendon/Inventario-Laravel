@@ -28,7 +28,7 @@ class TipoUbicacionRequest extends FormRequest
                 'tipo'   => 'required|unique:tipo_ubicacion',
             ],
             'PUT' => [
-                'tipo'   => 'required|unique:tipo_ubicacion',
+                'tipo'   => 'required|unique:tipo_ubicacion,tipo,'.$this->tipo_ubicacion.'',
             ]
         };
     }

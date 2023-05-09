@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Ubicacion;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UbicacionRequest extends FormRequest
 {
@@ -13,7 +15,7 @@ class UbicacionRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +25,21 @@ class UbicacionRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+
+        return match( $this->method() ){
+            'POST'=> [
+                'nombre'            => 'required|max:255|unique:ubicacion',
+                'codigo'            => 'string|nullable',
+                'tipo_ubicacion_id' => 'required|integer|exists:App\Models\TipoUbicacion,id',
+                'direccion'         => 'string|nullable'
+
+            ],
+            'PUT' => [
+                'nombre'            => 'max:255|unique:ubicacion,nombre,'.$this->ubicacion.'',
+                'codigo'            => 'string|nullable',
+                'tipo_ubicacion_id' => 'integer|exists:App\Models\TipoUbicacion,id',
+                'direccion'         => 'string|nullable'
+            ]
+        };
     }
 }

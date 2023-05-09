@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\Api\CategoriaArticuloController;
+use App\Http\Controllers\Api\EstadoArticuloController;
 use App\Http\Controllers\Api\MarcaController;
 use App\Http\Controllers\Api\SubcategoriaArticuloController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\TipoUbicacionController;
+use App\Http\Controllers\Api\UbicacionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,10 +42,13 @@ Route::group( ['middleware' => ["auth:api",]], function(){
 
     //Route::prefix("categoria-articulos")->group( function(){
 
-    Route::resource("/categoria-articulos",CategoriaArticuloController::class, ['only' => ['index', 'show', 'update','store'] ]);
-    Route::resource("/subcategoria-articulos",SubcategoriaArticuloController::class,  ['only' => ['index', 'show', 'update','store'] ]);
-    Route::resource("/marcas",MarcaController::class,  ['only' => ['index', 'show', 'update','store'] ]);
-    Route::resource("/tipo-ubicacion",TipoUbicacionController::class,  ['only' => ['index', 'show', 'update','store'] ]);
+    Route::apiResource("/categoria-articulos",CategoriaArticuloController::class);
+    Route::apiResource("/subcategoria-articulos",SubcategoriaArticuloController::class);
+    Route::apiResource("/marcas",MarcaController::class);
+    Route::apiResource("/tipo-ubicacion",TipoUbicacionController::class);
+    Route::apiResource("/ubicacion",UbicacionController::class);
+    Route::apiResource("/estado-articulo",EstadoArticuloController::class);
+
 
 });
 

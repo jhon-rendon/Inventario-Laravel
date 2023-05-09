@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Ubicacion extends Model
 {
     use HasFactory;
+
+    protected $table = "ubicacion";
+
+    protected $fillable = ['nombre','codigo','direccion','tipo_ubicacion_id'];
 }

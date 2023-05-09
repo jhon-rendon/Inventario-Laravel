@@ -30,8 +30,7 @@ class MarcaRequest extends FormRequest
                 'descripcion' => 'required'
             ],
             'PUT' => [
-                //'id'          => 'required|int|exists:marcas,id',
-                'nombre'      => 'string|unique:marcas',
+                'nombre'      => 'string|unique:marcas,nombre,'.$this->marca.'',
                 'descripcion' => 'string|nullable'
               ]
         };
