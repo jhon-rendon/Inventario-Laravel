@@ -46,14 +46,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/categoria-articulos",
-							"protocol": "http",
+							"raw": "{{host}}/categoria-articulos",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"categoria-articulos"
 							]
 						}
@@ -71,7 +68,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE2ODM1OTkwNjAsImV4cCI6MTY4MzYwMjY2MCwibmJmIjoxNjgzNTk5MDYwLCJqdGkiOiJxcjE4VnZuWVFEejJCZWpsIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJub21icmVzIjoiQWRtaW4iLCJhcGVsbGlkb3MiOiJBZG1pbiIsImRvY3VtZW50byI6IjEyMzQiLCJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsInRlbGVmb25vIjpudWxsLCJyb2xlcyI6WyJhZG1pbiJdLCJwZXJtaXNvcyI6WyJwZXJtaXNzaW9uX2luZGV4IiwicGVybWlzc2lvbl9jcmVhdGUiLCJwZXJtaXNzaW9uX3Nob3ciLCJwZXJtaXNzaW9uX2VkaXQiLCJwZXJtaXNzaW9uX2Rlc3Ryb3kiLCJyb2xlX2luZGV4Iiwicm9sZV9jcmVhdGUiLCJyb2xlX3Nob3ciLCJyb2xlX2VkaXQiLCJyb2xlX2Rlc3Ryb3kiLCJ1c2VyX2luZGV4IiwidXNlcl9jcmVhdGUiLCJ1c2VyX3Nob3ciLCJ1c2VyX2VkaXQiLCJ1c2VyX2Rlc3Ryb3kiLCJhcnRpY3Vsb19jcmVhdGUiLCJhcnRpY3Vsb19zaG93IiwiYXJ0aWN1bG9fZWRpdCIsImFydGljdWxvX2Rlc3Ryb3kiXX0.FJQxKyPoqw96lfTFY5tkySlbyrGu0sZ37h8jvTjjP04",
+									"value": "{{jwt}}",
 									"type": "string"
 								}
 							]
@@ -100,14 +97,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/categoria-articulos",
-							"protocol": "http",
+							"raw": "{{host}}/categoria-articulos",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"categoria-articulos"
 							]
 						}
@@ -154,14 +148,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/categoria-articulos/3",
-							"protocol": "http",
+							"raw": "{{host}}/categoria-articulos/3",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"categoria-articulos",
 								"3"
 							]
@@ -206,14 +197,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/categoria-articulos/61",
-							"protocol": "http",
+							"raw": "{{host}}/categoria-articulos/61",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"categoria-articulos",
 								"61"
 							]
@@ -263,14 +251,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/subcategoria-articulos",
-							"protocol": "http",
+							"raw": "{{host}}/subcategoria-articulos",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"subcategoria-articulos"
 							]
 						}
@@ -317,14 +302,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/subcategoria-articulos",
-							"protocol": "http",
+							"raw": "{{host}}/subcategoria-articulos",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"subcategoria-articulos"
 							]
 						}
@@ -415,7 +397,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"nombre\":\"557\",\r\n    \"descripcion\":\"dfdsfdsfdfd\",\r\n    \"categoria\":20,\r\n     \"tipo_cantidad\":\"unidad\"\r\n   \r\n}",
+							"raw": "{\r\n    \"nombre\":\"556\",\r\n    \"descripcion\":\"dfdsfdsfdfd\",\r\n    \"categoria\":20,\r\n    \"tipo_cantidad\":\"lote\"\r\n   \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -532,14 +514,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/auth/login",
-							"protocol": "http",
+							"raw": "{{host}}/auth/login",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"auth",
 								"login"
 							]
@@ -587,14 +566,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/auth/refresh",
-							"protocol": "http",
+							"raw": "{{host}}/auth/refresh",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"auth",
 								"refresh"
 							]
@@ -624,14 +600,11 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8000/api/user-profile",
-							"protocol": "http",
+							"raw": "{{host}}/user-profile",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"user-profile"
 							]
 						}
@@ -660,14 +633,11 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8000/api/auth/logout",
-							"protocol": "http",
+							"raw": "{{host}}/auth/logout",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"auth",
 								"logout"
 							]
@@ -696,14 +666,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8000/api/marcas",
-							"protocol": "http",
+							"raw": "{{host}}/marcas",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"marcas"
 							]
 						},
@@ -748,14 +715,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/marcas",
-							"protocol": "http",
+							"raw": "{{host}}/marcas",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"marcas"
 							]
 						}
@@ -791,7 +755,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n \r\n   \"nombre\":\"Samura999\",\r\n   \"descripss\":\"sdfd\"\r\n   \r\n   \r\n   \r\n}",
+							"raw": "{\r\n \r\n   \"nombre\":\"ACER\",\r\n   \"descripcion\":\"sdffghgfhgd\"\r\n   \r\n   \r\n   \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -799,16 +763,13 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/marcas/82",
-							"protocol": "http",
+							"raw": "{{host}}/marcas/1",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"marcas",
-								"82"
+								"1"
 							]
 						}
 					},
@@ -855,14 +816,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/marcas/1",
-							"protocol": "http",
+							"raw": "{{host}}/marcas/1",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"marcas",
 								"1"
 							]
@@ -897,14 +855,11 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8000/api/tipo-ubicacion",
-							"protocol": "http",
+							"raw": "{{host}}/tipo-ubicacion",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"tipo-ubicacion"
 							]
 						},
@@ -949,14 +904,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/tipo-ubicacion",
-							"protocol": "http",
+							"raw": "{{host}}/tipo-ubicacion",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"tipo-ubicacion"
 							]
 						}
@@ -992,7 +944,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\r\n    \"tipo\":\"punto de venta\"\r\n   \r\n   \r\n}",
+							"raw": "{\r\n\r\n    \"tipo\":\"zona\"\r\n   \r\n   \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1000,14 +952,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/tipo-ubicacion/1",
-							"protocol": "http",
+							"raw": "{{host}}/tipo-ubicacion/1",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
 								"tipo-ubicacion",
 								"1"
 							]
@@ -1055,14 +1004,575 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/tipo-ubicacion/2",
-							"protocol": "http",
+							"raw": "{{host}}/tipo-ubicacion/2",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8000",
 							"path": [
-								"api",
+								"tipo-ubicacion",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ubicacion",
+			"item": [
+				{
+					"name": "Listar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/ubicacion",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"ubicacion"
+							]
+						},
+						"description": "Listar Marcas"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \r\n    \"nombre\":\"sur\",\r\n    \"tipo_ubicacion_id\":\"2\"\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/ubicacion",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"ubicacion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\":\"norte\",\r\n    \"codigo\":\"1080\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/ubicacion/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"ubicacion",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar por ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/tipo-ubicacion/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"tipo-ubicacion",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "EstadoArticulo",
+			"item": [
+				{
+					"name": "Listar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/estado-articulo",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"estado-articulo"
+							]
+						},
+						"description": "Listar Marcas"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \r\n   \"estado\" :\"otro estado\"\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/estado-articulo",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"estado-articulo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\":\"norte\",\r\n    \"codigo\":\"1080\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/estado-articulo/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"estado-articulo",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar por ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/tipo-ubicacion/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"tipo-ubicacion",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "KardexArticulos",
+			"item": [
+				{
+					"name": "Listar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/kardex-articulos",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"kardex-articulos"
+							]
+						},
+						"description": "Listar Marcas"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \r\n   \"estado\" :\"otro estado\"\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/kardex-articulos",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"kardex-articulos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\":\"norte\",\r\n    \"codigo\":\"1080\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/estado-articulo/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"estado-articulo",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar por ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/tipo-ubicacion/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
 								"tipo-ubicacion",
 								"2"
 							]

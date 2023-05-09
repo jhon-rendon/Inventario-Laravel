@@ -23,7 +23,7 @@ class CreateKardexArticulosTable extends Migration
             $table->integer('estado_actual')->nullable();
 
             $table->foreignId('marcas_id')->references('id')->on('marcas');
-            $table->foreignId('categoria_articulos_id')->references('id')->on('categoria_articulos');
+            //$table->foreignId('categoria_articulos_id')->references('id')->on('categoria_articulos');
             $table->foreignId('subcategoria_articulos_id')->references('id')->on('subcategoria_articulos');
 
             $table->timestamps();

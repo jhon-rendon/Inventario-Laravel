@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CategoriaArticuloController;
 use App\Http\Controllers\Api\EstadoArticuloController;
+use App\Http\Controllers\Api\KardexArticuloController;
 use App\Http\Controllers\Api\MarcaController;
 use App\Http\Controllers\Api\SubcategoriaArticuloController;
 use Illuminate\Support\Facades\Route;
@@ -27,9 +28,6 @@ use App\Http\Controllers\Api\UbicacionController;
 
 Route::post('/auth/register', [UserController::class, 'register']);
 Route::post('/auth/login', [UserController::class, 'login']);
-/*Route::get('datos',function(){
-    return DB::select('Select * from table1');
-});*/
 
 
 Route::group( ['middleware' => ["auth:api",]], function(){
@@ -48,6 +46,7 @@ Route::group( ['middleware' => ["auth:api",]], function(){
     Route::apiResource("/tipo-ubicacion",TipoUbicacionController::class);
     Route::apiResource("/ubicacion",UbicacionController::class);
     Route::apiResource("/estado-articulo",EstadoArticuloController::class);
+    Route::apiResource("/kardex-articulos",KardexArticuloController::class);
 
 
 });

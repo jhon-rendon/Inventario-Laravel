@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SubcategoriaArticuloRequest;
 use App\Models\SubCategoriaArticulo;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 
 class SubcategoriaArticuloController extends Controller
 {

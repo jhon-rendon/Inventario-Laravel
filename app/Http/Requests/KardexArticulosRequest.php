@@ -13,7 +13,7 @@ class KardexArticulosRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +23,27 @@ class KardexArticulosRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        return match( $this->method() ){
+            'POST'=> [
+                'descripcion'                  => 'string|nullable',
+                'modelo'                       => 'string|nullable',
+                'serial'                       => 'string|nullable',
+                'activo'                       => 'string|nullable',
+                'marca'                        => 'required|integer|exists:App\Models\Marca,id',
+                'subcategoria'                 => 'required|integer|exists:App\Models\SubCategoriaArticulo,id',
+                //'categoria'                    => 'required|integer|exists:App\Models\CategoriaArticulo,id',
+            ],
+            'PUT' => [
+                'descripcion'                  => 'string|nullable',
+                'modelo'                       => 'string|nullable',
+                'serial'                       => 'string|nullable',
+                'activo'                       => 'string|nullable',
+                'marca'                        => 'integer|exists:App\Models\Marca,id',
+                'subcategoria'                 => 'integer|exists:App\Models\SubCategoriaArticulo,id',
+                //'categoria'                    => 'required|integer|exists:App\Models\CategoriaArticulo,id',
+                'ubicacion_actual'             => 'integer|exists:App\Models\Ubicacion,id',
+                'estado_actual'                => 'integer|exists:App\Models\EstadoArticulo,id',
+            ]
+        };
     }
 }
