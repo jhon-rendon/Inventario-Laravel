@@ -40,4 +40,18 @@ class Helper {
 
    }
 
+
+   public static function sendErrorShow( $id ){
+
+    if( !is_numeric($id) ){
+        throw new HttpResponseException(
+            response()->json([
+            "success" => false,
+            "message" => " El parametro ID debe ser numerico ",
+            ],401)
+        );
+    }
+
+   }
+
 }

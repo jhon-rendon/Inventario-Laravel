@@ -1,8 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Helpers\Helper;
+use App\Http\Requests\TipoUbicacionRequest;
+use App\Models\TipoUbicacion;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class TipoUbicacionController extends Controller
 {
@@ -11,9 +16,16 @@ class TipoUbicacionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct()
+    {
+
+    }
+
     public function index()
     {
-        //
+        $tipoUbicacion =  TipoUbicacion::all(["id","tipo"]);
+        return $tipoUbicacion;
     }
 
     /**
@@ -32,9 +44,16 @@ class TipoUbicacionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TipoUbicacionRequest $request)
     {
-        //
+
+        $data = $request->all();
+        TipoUbicacion::create($data);
+
+        return response()->json([
+            "success" => true,
+            "message" => "¡Registro del tipo de ubicación exitoso!",
+        ]);
     }
 
     /**
@@ -45,7 +64,21 @@ class TipoUbicacionController extends Controller
      */
     public function show($id)
     {
-        //
+        Helper::sendErrorShow($id);
+        try{
+            return response()->json([
+                "success" => true,
+                "message" => "Listado de tipo ubicacion",
+                "data"    => TipoUbicacion::findOrFail($id)
+            ],200);
+        }catch(ModelNotFoundException $e){
+
+            return response()->json([
+                "success" => false,
+                "data"    => null,
+                "message" => "No existe tipo de ubicacion con el ID ".$id
+            ],404);
+        }
     }
 
     /**
@@ -66,9 +99,39 @@ class TipoUbicacionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(TipoUbicacionRequest $request, $id)
     {
-        //
+        $input = $request->only(['tipo']);
+        Helper::sendErrorUpdate( $id, $request, $input );
+
+        $text = "Tipo de Ubicación";
+        try{
+            $marca = TipoUbicacion::findOrFail($id);
+
+            if( $marca->update( $input ) ){
+
+                return response()->json([
+                    "success" => true,
+                    "message" => $text." Actualizada",
+                    "data"    => $marca
+                ]);
+
+            }else{
+
+                return response()->json([
+                    "success" => false,
+                    "message" => "Error al actualizar el ".$text,
+                ],400);
+            }
+        }
+        catch(ModelNotFoundException $e)
+        {
+            return response()->json([
+                "success" => false,
+                "message" => $text." No encontrada",
+            ],404);
+        }
+
     }
 
     /**

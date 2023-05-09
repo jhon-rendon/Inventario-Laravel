@@ -39,8 +39,10 @@ class SubcategoriaArticuloRequest extends FormRequest
             ],
             'PUT' => [
                 //'id'          => 'required|int|exists:articulos,id',
-                'nombre'      => 'string|unique:subcategoria_articulos',
-                'descripcion' => 'required|string'
+                'nombre'      =>  'string|unique:subcategoria_articulos',
+                'descripcion' =>  'string|nullable',
+                'categoria'    => 'integer|exists:App\Models\CategoriaArticulo,id',
+                'tipo_cantidad'=> 'string|in:lote,unidad'
             ]
         };
     }

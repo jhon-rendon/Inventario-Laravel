@@ -7,6 +7,7 @@ use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 
@@ -26,19 +27,28 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed'
+            'password' => 'required|string|min:6|confirmed'
         ]);
 
-        $user = new User();
+       /* $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
-        $user->save();
+        $user->save();*/
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
 
+        $token = Auth::login($user);
 
         return response()->json([
-            "status" => 1,
-            "msg" => "¡Registro de usuario exitoso!",
+            "success" => true,
+            "message" => "¡Registro de usuario exitoso!",
+            'user' => $user,
+            'token' => $token,
+            'type' => 'bearer',
         ]);
     }
 
@@ -56,48 +66,103 @@ class UserController extends Controller
 
         if( isset($user->id) ){
             if(Hash::check($request->password, $user->password)){
-                //creamos el token
-                /*$token = $user->createToken("auth_token")->plainTextToken;
-                //si está todo ok
-                return response()->json([
-                    "status" => 1,
-                    "message" => "¡Usuario logueado exitosamente!",
-                    "accessToken" => $token
-                ]);*/
-                //auth()->user()->tokens()->delete();
 
-                return new UserResource( $user );
+                $credentials = $request->only('email', 'password');
+
+                $token = auth()->claims(
+                    [
+                        'nombres'   => $user->nombres,
+                        'apellidos' => $user->apellidos,
+                        'documento' => $user->documento,
+                        'email'     => $user->email,
+                        'telefono'  => $user->telefono,
+                        'roles'     => $user->roles->pluck('name') ?? [],
+                        'permisos'  => $user->getPermissionsViaRoles()->pluck('name') ?? [],
+                    ]
+                    )->attempt($credentials);
+
+
+                if (!$token) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Unauthorized',
+                    ], 401);
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Usuario logueado exitosamente',
+                    //'user' => $user,
+                    'access_token' => $token,
+                    'token_type' => 'bearer'
+                    ]);
             }else{
                 return response()->json([
-                    "status" => 0,
-                    "message" => "La password es incorrecta",
+                    "success" => false,
+                    "message" => "El password es incorrecto",
                 ], 404);
             }
 
         }else{
             return response()->json([
-                "status" => 0,
+                "success" => false,
                 "message" => "Usuario no registrado",
             ], 404);
         }
+
+        /*$request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
+        $credentials = $request->only('email', 'password');
+
+        $token = Auth::attempt($credentials);
+        if (!$token) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized',
+            ], 401);
+        }
+
+        $user = Auth::user();
+        return response()->json([
+                'success' => true,
+                'message' => 'Usuario logueado exitosamente',
+                'user' => $user,
+                'token' => $token,
+                'type' => 'bearer'
+
+            ]);*/
     }
 
     public function userProfile() {
         return response()->json([
-            "status" => 0,
-            "message del perfil de usuario",
+            "success" => true,
+            "message" => "datos del usuario",
             "data"  => auth()->user(),
-            "roles" => auth()->user()->roles,
+            //"roles" => auth()->user()->roles->pluck('name') ?? [],
+            "permisos" => auth()->user()->getPermissionsViaRoles()->pluck('name') ?? [],
+            //"permisos"   =>  auth()->user()->permissions->pluck('name') ?? []
             //"rolesl_all" => User::has('roles')
         ]);
     }
 
     public function logout() {
-        auth()->user()->tokens()->delete();
 
+        Auth::logout();
         return response()->json([
-            "status" => 1,
-            "message" => "Cierre de Sesión",
+            'success' =>  true,
+            'message' => 'Successfully logged out',
+        ]);
+    }
+
+    public function refresh()
+    {
+        return response()->json([
+            'success'     => true,
+            'acces_token' => Auth::refresh(),
+            'token_type'  => 'bearer',
+
         ]);
     }
 }

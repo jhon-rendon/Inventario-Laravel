@@ -17,7 +17,7 @@ class CreateSubcategoriaArticulosTable extends Migration
             $table->id();
             $table->string('nombre')->unique();
             $table->string('descripcion')->nullable();
-            $table->enum('tipo_cantidad',['unico','lote'])->comment("Tipo de cantidades unico y por lote");
+            $table->enum('tipo_cantidad',['unidad','lote'])->comment("Tipo de cantidades unidad y por lote");
             $table->foreignId('categoria_articulos_id')->references('id')->on('categoria_articulos');
             $table->timestamps();
         });

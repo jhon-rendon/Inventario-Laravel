@@ -13,7 +13,7 @@ class TipoUbicacionRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +23,13 @@ class TipoUbicacionRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        return match( $this->method() ){
+            'POST'=> [
+                'tipo'   => 'required|unique:tipo_ubicacion',
+            ],
+            'PUT' => [
+                'tipo'   => 'required|unique:tipo_ubicacion',
+            ]
+        };
     }
 }

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubcategoriaArticuloRequest;
 use App\Models\SubCategoriaArticulo;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class SubcategoriaArticuloController extends Controller
@@ -16,7 +18,8 @@ class SubcategoriaArticuloController extends Controller
      */
     public function index()
     {
-        //
+        $subcategoria =  SubCategoriaArticulo::all();
+        return $subcategoria;
     }
 
     /**
@@ -62,7 +65,21 @@ class SubcategoriaArticuloController extends Controller
      */
     public function show($id)
     {
-        //
+        Helper::sendErrorShow($id);
+
+       try
+        {
+            $articulo = SubCategoriaArticulo::findOrFail($id);
+            return $articulo;
+        }
+        // catch(Exception $e) catch any exception
+        catch(ModelNotFoundException $e)
+        {
+            return response()->json([
+                "success" => false,
+                "message" => "Subcategoria No encontrada",
+            ],404);
+        }
     }
 
     /**
@@ -83,9 +100,42 @@ class SubcategoriaArticuloController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(SubcategoriaArticuloRequest $request, $id)
     {
-        //
+        $input = $request->only(['nombre', 'descripcion','tipo_cantidad','categoria']);
+        Helper::sendErrorUpdate( $id, $request, $input );
+
+        try{
+            $subcategoria = SubCategoriaArticulo::findOrFail($id);
+
+            $subcategoria->nombre                   = ( !empty( $request->input('nombre')) ) ? $request->input('nombre') : $subcategoria->nombre;
+            $subcategoria->descripcion              = ( !empty( $request->input('descripcion')) ) ? $request->input('descripcion') : $subcategoria->descripcion;
+            $subcategoria->categoria_articulos_id   = ( !empty( $request->input('categoria')) ) ? $request->input('categoria') : $subcategoria->categoria_articulos_id;
+            $subcategoria->tipo_cantidad            = ( !empty( $request->input('tipo_cantidad')) ) ? $request->input('tipo_cantidad') : $subcategoria->tipo_cantidad;
+
+            if( $subcategoria->save() ){
+
+                return response()->json([
+                    "success" => true,
+                    "message" => "Subcategoria Actualizada",
+                    "data" => $subcategoria
+                ]);
+
+            }else{
+
+                return response()->json([
+                    "success" => false,
+                    "message" => "Error al actualizar la subcategoria",
+                ],400);
+            }
+        }
+        catch(ModelNotFoundException $e)
+        {
+            return response()->json([
+                "success" => false,
+                "message" => "Subcategoria No encontrada",
+            ],404);
+        }
     }
 
     /**

@@ -5,7 +5,7 @@ use App\Http\Controllers\Api\MarcaController;
 use App\Http\Controllers\Api\SubcategoriaArticuloController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
-
+use App\Http\Controllers\Api\TipoUbicacionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,49 +25,26 @@ use App\Http\Controllers\Api\UserController;
 
 Route::post('/auth/register', [UserController::class, 'register']);
 Route::post('/auth/login', [UserController::class, 'login']);
-Route::get('datos',function(){
+/*Route::get('datos',function(){
     return DB::select('Select * from table1');
-});
+});*/
 
 
-Route::group( ['middleware' => ["token.validation",]], function(){
+Route::group( ['middleware' => ["auth:api",]], function(){
 
 
     //rutas
     Route::get('user-profile', [UserController::class, 'userProfile']);
     Route::get('/auth/logout', [UserController::class, 'logout']);
+    Route::get('/auth/refresh', [UserController::class, 'refresh']);
 
+    //Route::prefix("categoria-articulos")->group( function(){
 
+    Route::resource("/categoria-articulos",CategoriaArticuloController::class, ['only' => ['index', 'show', 'update','store'] ]);
+    Route::resource("/subcategoria-articulos",SubcategoriaArticuloController::class,  ['only' => ['index', 'show', 'update','store'] ]);
+    Route::resource("/marcas",MarcaController::class,  ['only' => ['index', 'show', 'update','store'] ]);
+    Route::resource("/tipo-ubicacion",TipoUbicacionController::class,  ['only' => ['index', 'show', 'update','store'] ]);
 
-
-    Route::prefix("categoria_articulos")->group( function(){
-
-      //Route::middleware(['role_or_permission:articulo_show'])->get('/',[CategoriaArticuloController::class,"index"]);
-        Route::get("/",[CategoriaArticuloController::class,"index"]);
-        Route::get("/{id}",[CategoriaArticuloController::class,"show"])->where(['id' => '[0-9]+']);
-        Route::put("/{id}",[CategoriaArticuloController::class,"update"])->where(['id' => '[0-9]+']);
-        Route::post("/",[CategoriaArticuloController::class,"store"]);
-
-    });
-
-    Route::prefix("subcategoria_articulos")->group( function(){
-
-        //Route::middleware(['role_or_permission:articulo_show'])->get('/',[CategoriaArticuloController::class,"index"]);
-          Route::get("/",[SubcategoriaArticuloController::class,"index"]);
-          Route::get("/{id}",[SubcategoriaArticuloController::class,"show"])->where(['id' => '[0-9]+']);
-          Route::put("/{id}",[SubcategoriaArticuloController::class,"update"])->where(['id' => '[0-9]+']);
-          Route::post("/",[SubcategoriaArticuloController::class,"store"]);
-
-    });
-
-
-    Route::prefix("marcas")->group( function(){
-        Route::get("/",[MarcaController::class,"index"]);
-        Route::get("/{id}",[MarcaController::class,"show"])->where(['id' => '[0-9]+']);
-        Route::put("/{id}",[MarcaController::class,"update"]);//->where(['id' => '[0-9]+']);
-        Route::post("/",[MarcaController::class,"store"]);
-
-    });
 });
 
 

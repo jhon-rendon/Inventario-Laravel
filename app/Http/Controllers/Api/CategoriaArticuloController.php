@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Requests\CategoriaArticuloRequest;
@@ -83,15 +84,9 @@ class CategoriaArticuloController extends Controller
      */
     public function show( $id )
     {
-        /*if( !is_numeric($id))
+        Helper::sendErrorShow($id);
 
-        return response()->json([
-            "status" => false,
-            "msg" => "El ID debe ser numerico",
-        ],404);*/
-
-
-        try
+       try
         {
             $articulo = CategoriaArticulo::findOrFail($id);
             return $articulo;
@@ -102,7 +97,7 @@ class CategoriaArticuloController extends Controller
 
             return response()->json([
                 "success" => false,
-                "message" => "Articulo No encontrado",
+                "message" => "Categoria No encontrada",
             ],404);
         }
 
@@ -128,6 +123,10 @@ class CategoriaArticuloController extends Controller
      */
     public function update(CategoriaArticuloRequest $request, $id )
     {
+
+
+       $input = $request->only(['nombre', 'descripcion']);
+       Helper::sendErrorUpdate( $id, $request, $input );
 
         try{
             $articulo = CategoriaArticulo::findOrFail($id);

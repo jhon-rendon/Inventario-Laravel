@@ -31,7 +31,7 @@ class CategoriaArticuloRequest extends FormRequest
             'PUT' => [
                 //'id'          => 'required|int|exists:articulos,id',
                 'nombre'      => 'string|unique:categoria_articulos',
-                'descripcion' => 'required|string'
+                'descripcion' => 'string'
             ]
         };
      }
