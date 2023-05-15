@@ -11,4 +11,9 @@ class TipoUbicacion extends Model
 
     protected $fillable = ['tipo'];
     protected $table    = 'tipo_ubicacion';
+
+    public function ubicacion(){
+
+        return $this->hasMany(Ubicacion::class);
+    }
 }

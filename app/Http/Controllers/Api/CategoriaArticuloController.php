@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Requests\CategoriaArticuloRequest;
 use App\Models\CategoriaArticulo;
-
+use Illuminate\Http\Request;
 
 class CategoriaArticuloController extends Controller
 {
@@ -32,15 +32,18 @@ class CategoriaArticuloController extends Controller
        $this->middleware('permission:role-delete', ['only' => ['destroy']]);*/
     }
 
-    public function index()
+    public function index(Request $request)
     {
-       // abort_if(Gate::denies('articulo_index'), 403);
 
-        //$articulos = Articulo::paginate(5);
-
-        $articulos = CategoriaArticulo::all();
-        return $articulos;
+        if( !$request->query('paginate') || $request->query('paginate') !== 'false' ){
+            $categoria = CategoriaArticulo::orderBy('nombre', 'asc')->paginate(10);
+        }
+        else{
+            $categoria = CategoriaArticulo::orderBy('nombre', 'asc')->get();
+        }
+        return $categoria;
     }
+
 
     /**
      * Show the form for creating a new resource.

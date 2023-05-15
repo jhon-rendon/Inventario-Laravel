@@ -21,4 +21,9 @@ class SubCategoriaArticulo extends Model
         'tipo_cantidad',
         'categoria_articulos_id'
     ];
+
+    public function categoria(){
+
+      return $this->belongsTo(CategoriaArticulo::class,'categoria_articulos_id','id');
+    }
 }

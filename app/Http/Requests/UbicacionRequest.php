@@ -35,9 +35,9 @@ class UbicacionRequest extends FormRequest
 
             ],
             'PUT' => [
-                'nombre'            => 'max:255|unique:ubicacion,nombre,'.$this->ubicacion.'',
+                'nombre'            => 'required|min:3|max:255|unique:ubicacion,nombre,'.$this->ubicacion.'',
                 'codigo'            => 'string|nullable',
-                'tipo_ubicacion_id' => 'integer|exists:App\Models\TipoUbicacion,id',
+                'tipo_ubicacion_id' => 'required|integer|exists:App\Models\TipoUbicacion,id',
                 'direccion'         => 'string|nullable'
             ]
         };

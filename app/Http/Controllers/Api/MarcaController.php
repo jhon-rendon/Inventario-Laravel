@@ -18,7 +18,7 @@ class MarcaController extends Controller
      */
     public function index()
     {
-        $marcas = Marca::all();
+        $marcas = Marca::paginate(10);
         $count  = $marcas->count();
 
         if( $count > 0 ){

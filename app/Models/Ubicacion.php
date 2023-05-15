@@ -12,4 +12,9 @@ class Ubicacion extends Model
     protected $table = "ubicacion";
 
     protected $fillable = ['nombre','codigo','direccion','tipo_ubicacion_id'];
+
+    public function tipoUbicacion(){
+
+        return $this->belongsTo(TipoUbicacion::class,'tipo_ubicacion_id','id');
+    }
 }

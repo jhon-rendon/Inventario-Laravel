@@ -22,9 +22,15 @@ class TipoUbicacionController extends Controller
 
     }
 
-    public function index()
+    public function index(Request $request )
     {
-        $tipoUbicacion =  TipoUbicacion::all(["id","tipo"]);
+        if( !$request->query('paginate') || $request->query('paginate') !== 'false' ){
+            $tipoUbicacion = TipoUbicacion::orderBy('tipo', 'asc')->paginate(10);
+        }
+        else{
+            $tipoUbicacion = TipoUbicacion::orderBy('tipo', 'asc')->get(["id","tipo"]);
+        }
+
         return $tipoUbicacion;
     }
 

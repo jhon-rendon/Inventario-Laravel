@@ -26,11 +26,11 @@ use App\Http\Controllers\Api\UbicacionController;
 });*/
 
 
+Route::post('/auth/login', [UserController::class, 'login'],['only' =>['login']]);
 Route::post('/auth/register', [UserController::class, 'register']);
-Route::post('/auth/login', [UserController::class, 'login']);
 
 
-Route::group( ['middleware' => ["auth:api",]], function(){
+//Route::group( ['middleware' => ["token.validation",]], function(){
 
 
     //rutas
@@ -40,7 +40,10 @@ Route::group( ['middleware' => ["auth:api",]], function(){
 
     //Route::prefix("categoria-articulos")->group( function(){
 
-    Route::apiResource("/categoria-articulos",CategoriaArticuloController::class);
+    Route::apiResource("/categoria-articulos",CategoriaArticuloController::class,['only'=>['index','update','store','show']]);
+   // Route::get("/categoria-articulos/listarAll",[CategoriaArticuloController::class,"listarCategoriasAll"]);
+
+
     Route::apiResource("/subcategoria-articulos",SubcategoriaArticuloController::class);
     Route::apiResource("/marcas",MarcaController::class);
     Route::apiResource("/tipo-ubicacion",TipoUbicacionController::class);
@@ -49,7 +52,7 @@ Route::group( ['middleware' => ["auth:api",]], function(){
     Route::apiResource("/kardex-articulos",KardexArticuloController::class);
 
 
-});
+//});
 
 
 

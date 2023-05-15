@@ -18,16 +18,18 @@ class UserController extends Controller
 
     public function index()
     {
-        abort_if(Gate::denies('user_index'), 403);
+        /*abort_if(Gate::denies('user_index'), 403);
         $users = User::paginate(5);
-        return view('users.index', compact('users'));
+        return view('users.index', compact('users'));*/
     }
 
     public function register(Request $request) {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:6|confirmed'
+            'nombres'     => 'required|string|min:6',
+            'apellidos'   => 'required|string|min:6',
+            'email'       => 'required|email|unique:users',
+            'documento'   => 'required|integer|unique:users',
+            'password'    => 'required|string|min:6'
         ]);
 
        /* $user = new User();
@@ -36,19 +38,21 @@ class UserController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();*/
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'nombres'    => $request->nombres,
+            'apellidos'  => $request->apellidos,
+            'documento'  => $request->documento,
+            'email'      => $request->email,
+            'password'   => Hash::make($request->password),
         ]);
 
         $token = Auth::login($user);
 
         return response()->json([
-            "success" => true,
-            "message" => "¡Registro de usuario exitoso!",
-            'user' => $user,
-            'token' => $token,
-            'type' => 'bearer',
+            "success"     => true,
+            "message"     => "¡Registro de usuario exitoso!",
+            'user'        => $user,
+            'accessToken' => $token,
+            'type'        => 'bearer',
         ]);
     }
 
@@ -57,7 +61,7 @@ class UserController extends Controller
 
 
         $request->validate([
-            "email" => "required|email",
+            "email"    => "required|email",
             "password" => "required"
         ]);
 
@@ -69,7 +73,7 @@ class UserController extends Controller
 
                 $credentials = $request->only('email', 'password');
 
-                $token = auth()->claims(
+                /*$token = auth()->claims(
                     [
                         'nombres'   => $user->nombres,
                         'apellidos' => $user->apellidos,
@@ -79,8 +83,8 @@ class UserController extends Controller
                         'roles'     => $user->roles->pluck('name') ?? [],
                         'permisos'  => $user->getPermissionsViaRoles()->pluck('name') ?? [],
                     ]
-                    )->attempt($credentials);
-
+                    )->attempt($credentials);*/
+                $token = auth()->attempt($credentials);
 
                 if (!$token) {
                     return response()->json([
@@ -89,12 +93,23 @@ class UserController extends Controller
                     ], 401);
                 }
 
+                $dataUser = [
+                    'nombres'   => $user->nombres,
+                    'apellidos' => $user->apellidos,
+                    'documento' => $user->documento,
+                    'email'     => $user->email,
+                    'telefono'  => $user->telefono,
+                    'roles'     => $user->roles->pluck('name') ?? [],
+                    'permisos'  => $user->getPermissionsViaRoles()->pluck('name') ?? [],
+                ];
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Usuario logueado exitosamente',
-                    //'user' => $user,
-                    'access_token' => $token,
-                    'token_type' => 'bearer'
+                    'user'    => $dataUser,
+                    'accessToken' => $token,
+                    'token_type' => 'bearer',
+                    'expires_in' => auth()->factory()->getTTL() * 60,
                     ]);
             }else{
                 return response()->json([
@@ -136,14 +151,23 @@ class UserController extends Controller
     }
 
     public function userProfile() {
+
+        $user = auth()->user();
+
+        $dataUser = [
+            'nombres'   => $user->nombres,
+            'apellidos' => $user->apellidos,
+            'documento' => $user->documento,
+            'email'     => $user->email,
+            'telefono'  => $user->telefono,
+            'roles'     => $user->roles->pluck('name') ?? [],
+            'permisos'  => $user->getPermissionsViaRoles()->pluck('name') ?? [],
+        ];
+
         return response()->json([
             "success" => true,
             "message" => "datos del usuario",
-            "data"  => auth()->user(),
-            //"roles" => auth()->user()->roles->pluck('name') ?? [],
-            "permisos" => auth()->user()->getPermissionsViaRoles()->pluck('name') ?? [],
-            //"permisos"   =>  auth()->user()->permissions->pluck('name') ?? []
-            //"rolesl_all" => User::has('roles')
+            "user"    =>  $dataUser
         ]);
     }
 
@@ -158,9 +182,14 @@ class UserController extends Controller
 
     public function refresh()
     {
+        //$newToken = auth()->refresh();
+
+        // Pass true as the first param to force the token to be blacklisted "forever".
+        // The second parameter will reset the claims for the new token
+        $newToken = Auth::refresh(true, true);
         return response()->json([
             'success'     => true,
-            'acces_token' => Auth::refresh(),
+            'accessToken' => $newToken,
             'token_type'  => 'bearer',
 
         ]);

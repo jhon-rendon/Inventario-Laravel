@@ -19,4 +19,10 @@ class CategoriaArticulo extends Model
         'nombre',
         'descripcion'
     ];
+
+
+    public function subcategorias(){
+
+        return $this->hasMany(SubCategoriaArticulo::class);
+    }
 }

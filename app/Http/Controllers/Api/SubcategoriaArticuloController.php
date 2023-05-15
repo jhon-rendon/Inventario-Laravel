@@ -17,7 +17,8 @@ class SubcategoriaArticuloController extends Controller
      */
     public function index()
     {
-        $subcategoria =  SubCategoriaArticulo::all();
+        //$subcategoria =  SubCategoriaArticulo::paginate(10);
+        $subcategoria = SubCategoriaArticulo::with('categoria')->paginate(10);
         return $subcategoria;
     }
 

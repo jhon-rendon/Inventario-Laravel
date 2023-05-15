@@ -7,7 +7,7 @@ use App\Http\Requests\UbicacionRequest;
 use App\Models\Ubicacion;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Controllers\Controller;
-
+use GuzzleHttp\Psr7\Request;
 
 class UbicacionController extends Controller
 {
@@ -16,9 +16,17 @@ class UbicacionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index( )
     {
-        $ubicacion =  Ubicacion::all();
+        /*if( !$request->query('paginate') || $request->query('paginate') !== 'false' ){
+            $ubicacion = Ubicacion::orderBy('tipo', 'asc')->paginate(10);
+        }
+        else{
+           // $ubicacion = Ubicacion::orderBy('tipo', 'asc')->get();
+            $subcategoria = Ubicacion::with('tipoUbicacion')->paginate(10);
+        }*/
+        $ubicacion = Ubicacion::with('tipoUbicacion')->paginate(10);
+
         return $ubicacion;
     }
 
@@ -100,14 +108,14 @@ class UbicacionController extends Controller
 
         $text = "Ubicación";
         try{
-            $marca = Ubicacion::findOrFail($id);
+            $ubicacion = Ubicacion::findOrFail($id);
 
-            if( $marca->update( $input ) ){
+            if( $ubicacion->update( $input ) ){
 
                 return response()->json([
                     "success" => true,
                     "message" => $text." Actualizada",
-                    "data"    => $marca
+                    "data"    => $ubicacion
                 ]);
 
             }else{
