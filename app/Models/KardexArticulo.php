@@ -23,4 +23,21 @@ class KardexArticulo extends Model
     ];
 
     protected $table  = "kardex_articulos";
+
+
+    public function subcategoria(){
+
+        return $this->belongsTo(SubCategoriaArticulo::class,'subcategoria_articulos_id','id');
+    }
+
+    public function marcas(){
+
+        return $this->belongsTo(Marca::class,'marcas_id','id');
+    }
+
+    public function kardexUbicacion(){
+
+        return $this->hasMany(KardexUbicacion::class,'kardex_articulos','id');
+    }
+
 }

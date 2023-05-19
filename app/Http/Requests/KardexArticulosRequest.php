@@ -27,10 +27,14 @@ class KardexArticulosRequest extends FormRequest
             'POST'=> [
                 'descripcion'                  => 'string|nullable',
                 'modelo'                       => 'string|nullable',
-                'serial'                       => 'string|nullable',
+                'tipo_cantidad'                => 'nullable|in:lote,unidad',
+                'cantidad'                     => 'required|integer',
+                'serial'                       => 'required_if:tipo_cantidad,unidad',
                 'activo'                       => 'string|nullable',
                 'marca'                        => 'required|integer|exists:App\Models\Marca,id',
                 'subcategoria'                 => 'required|integer|exists:App\Models\SubCategoriaArticulo,id',
+                'estado'                       => 'required|integer',
+                'ubicacion_destino'            => 'required|integer|exists:App\Models\Ubicacion,id',
                 //'categoria'                    => 'required|integer|exists:App\Models\CategoriaArticulo,id',
             ],
             'PUT' => [

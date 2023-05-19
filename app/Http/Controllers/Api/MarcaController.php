@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use APP\Helpers\Helper as Helper;
 use App\Http\Requests\MarcaRequest;
 use App\Models\Marca;
+
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class MarcaController extends Controller
 {
@@ -16,12 +18,31 @@ class MarcaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index( Request $request )
     {
-        $marcas = Marca::paginate(10);
-        $count  = $marcas->count();
 
-        if( $count > 0 ){
+        /***
+         if( !$request->query('paginate') || $request->query('paginate') !== 'false' ){
+            $categoria = CategoriaArticulo::orderBy('nombre', 'asc')->paginate(10);
+        }
+        else{
+            $categoria = CategoriaArticulo::orderBy('nombre', 'asc')->get();
+        }
+        return $categoria;
+         */
+
+        if( !$request->query('paginate') || $request->query('paginate') !== 'false' ){
+            $marcas = Marca::paginate(10);
+        }
+        else{
+            $marcas = Marca::all();
+        }
+
+        return $marcas;
+
+       // $count  = $marcas->count();
+
+        /*if( $count > 0 ){
             return response()->json([
                 "message" =>"Listado de Marcas",
                 "success" => true,
@@ -33,7 +54,7 @@ class MarcaController extends Controller
                 "message"  =>  "No existen registros de Marcas",
                 "success"  =>  false,
             ],404);
-        }
+        }*/
     }
 
     /**

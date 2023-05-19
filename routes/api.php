@@ -8,7 +8,9 @@ use App\Http\Controllers\Api\SubcategoriaArticuloController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\TipoUbicacionController;
+use App\Http\Controllers\Api\TrasladoArticuloController;
 use App\Http\Controllers\Api\UbicacionController;
+use App\Http\Controllers\Api\KardexUbicacionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +52,10 @@ Route::post('/auth/register', [UserController::class, 'register']);
     Route::apiResource("/ubicacion",UbicacionController::class);
     Route::apiResource("/estado-articulo",EstadoArticuloController::class);
     Route::apiResource("/kardex-articulos",KardexArticuloController::class);
+    Route::apiResource("/traslado-articulos",TrasladoArticuloController::class);
+
+    Route::post("/kardex-ubicacion/valid-articulo",[KardexUbicacionController::class,'validKardexUbicacionArticulo'])->name('kardex-ubicacion.valid');
+
 
 
 //});

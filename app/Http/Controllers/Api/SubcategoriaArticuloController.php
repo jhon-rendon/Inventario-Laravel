@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SubcategoriaArticuloRequest;
 use App\Models\SubCategoriaArticulo;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class SubcategoriaArticuloController extends Controller
 {
@@ -15,10 +16,16 @@ class SubcategoriaArticuloController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index( Request $request )
     {
-        //$subcategoria =  SubCategoriaArticulo::paginate(10);
-        $subcategoria = SubCategoriaArticulo::with('categoria')->paginate(10);
+
+        if( !$request->query('paginate') || $request->query('paginate') !== 'false' ){
+            $subcategoria = SubCategoriaArticulo::with('categoria')->paginate(10);
+        }
+        else{
+            $subcategoria = SubCategoriaArticulo::with('categoria')->get();
+        }
+
         return $subcategoria;
     }
 

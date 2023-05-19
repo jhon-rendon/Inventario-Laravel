@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Models\KardexUbicacion;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class KardexUbicacionController extends Controller
 {
@@ -34,8 +36,9 @@ class KardexUbicacionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
+
 
     /**
      * Display the specified resource.
@@ -80,5 +83,33 @@ class KardexUbicacionController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function validKardexUbicacionArticulo( Request $request ){
+
+        $request->validate([
+            "id_articulo"    => "required|integer",
+            "id_ubicacion"   => "required|integer",
+        ]);
+
+        $kardexUbicacion = KardexUbicacion::with('ubicacion')
+                                        ->where('id', $request->input('id_ubicacion'))
+                                        ->where('kardex_articulos',$request->input('id_articulo'))->first();
+
+        if( $kardexUbicacion && count( (array) $kardexUbicacion) > 0 ){
+
+            return response([
+                "success" => true,
+                "message" => "La ubicacion y el articulo existen y se encuentran relacionados",
+                "data"    => $kardexUbicacion
+            ]);
+        }
+        else{
+
+            return response([
+                "success" => false,
+                "message" => "La ubicacion y el articulo no existen ó no se encuentran relacionados"
+            ],404);
+        }
     }
 }

@@ -8,6 +8,10 @@ use App\Models\KardexArticulo;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\KardexArticulosRequest;
+use App\Models\KardexUbicacion;
+use App\Models\TrasladoArticulo;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class KardexArticuloController extends Controller
 {
@@ -16,10 +20,20 @@ class KardexArticuloController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index( Request $request )
     {
-        $kardexArticulos =  KardexArticulo::all();
+        //$kardexArticulos =  KardexArticulo::all();
+        //return $kardexArticulos;
+
+        if( !$request->query('paginate') || $request->query('paginate') !== 'false' ){
+            $kardexArticulos = KardexArticulo::with(['subcategoria.categoria','marcas','kardexUbicacion.ubicacion'])->paginate(10);
+        }
+        else{
+            $kardexArticulos = KardexArticulo::with(['subcategoria.categoria','marcas','kardexUbicacion.ubicacion'])->get();
+        }
         return $kardexArticulos;
+
+
     }
 
 
@@ -32,6 +46,16 @@ class KardexArticuloController extends Controller
     public function store(KardexArticulosRequest $request)
     {
 
+        if( $request->input('tipo_cantidad') === 'lote' ){
+            $cantidad         = $request->input('cantidad');
+            $ubicacionActual  = null;
+            $estadoActual     = null;
+        }else if( $request->input('tipo_cantidad') === 'unidad' ){
+            $cantidad        = 1;
+            $ubicacionActual = $request->input('ubicacion_destino');
+            $estadoActual    = $request->input('estado');
+        }
+
         $kardexArticulos = new KardexArticulo();
         $kardexArticulos->modelo                    =  $request->input('modelo');
         $kardexArticulos->descripcion               =  $request->input('descripcion');
@@ -39,7 +63,44 @@ class KardexArticuloController extends Controller
         $kardexArticulos->serial                    =  $request->input('serial');
         $kardexArticulos->marcas_id                 =  $request->input('marca');
         $kardexArticulos->subcategoria_articulos_id =  $request->input('subcategoria');
-        $kardexArticulos->save();
+        $kardexArticulos->ubicacion_actual          = $ubicacionActual;
+        $kardexArticulos->estado_actual             = $estadoActual;
+
+
+        if( $kardexArticulos->save() ) {
+            if( $kardexArticulos->id ){
+                $id = $kardexArticulos->id;
+
+                $kardexUbicacion                       = new KardexUbicacion();
+                $kardexUbicacion->cantidad             = $cantidad;
+                $kardexUbicacion->ubicacion_id         = $request->input('ubicacion_destino');
+                $kardexUbicacion->kardex_articulos     = $id;
+                $kardexUbicacion->save();
+
+                $trasladoArticulo                      = new TrasladoArticulo();
+                $trasladoArticulo->estado_articulo_id  = $request->input('estado');
+                $trasladoArticulo->cantidad            = $request->input('cantidad');
+                $trasladoArticulo->ubicacion_origen    = $request->input('ubicacion_origen');
+                $trasladoArticulo->ubicacion_destino   = $request->input('ubicacion_destino');
+                $trasladoArticulo->ticket              = $request->input('ticket');
+                $trasladoArticulo->usuario_id          = 1;
+                $trasladoArticulo->kardex_articulos_id = $id;
+                $trasladoArticulo->fecha               = Carbon::now()->toDateString();
+                $trasladoArticulo->hora                = Carbon::now()->toTimeString();
+                $trasladoArticulo->save();
+            }
+        }
+
+
+
+        /*$subcategoriaById = SubCategoriaArticulo::find($request->input('subcategoria'));
+
+        if( $subcategoriaById->tipo_cantidad === 'lote' ){
+
+        }
+        else if ( $subcategoriaById->tipo_cantidad === 'unidad' ){
+
+        }*/
 
         return response()->json([
             "success" => true,
@@ -59,15 +120,20 @@ class KardexArticuloController extends Controller
 
        try
         {
-            $articulo = KardexArticulo::findOrFail($id);
+            $articulo = KardexArticulo::with(['subcategoria.categoria','marcas','kardexUbicacion.ubicacion'])->findOrFail($id);
             return $articulo;
+            return response()->json([
+                "success" => true,
+                "message" => "",
+                "data"    => $articulo
+            ],404);
         }
         // catch(Exception $e) catch any exception
         catch(ModelNotFoundException $e)
         {
             return response()->json([
                 "success" => false,
-                "message" => "Subcategoria No encontrada",
+                "message" => "Articulo No encontrado",
             ],404);
         }
     }

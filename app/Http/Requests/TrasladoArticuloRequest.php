@@ -13,7 +13,7 @@ class TrasladoArticuloRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +23,26 @@ class TrasladoArticuloRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        return match( $this->method() ){
+            'POST'=> [
+                'cantidad'                     => 'required|integer',
+                'estado'                       => 'required|integer',
+                'ubicacion_origen'             => 'required|integer|exists:App\Models\Ubicacion,id|different:ubicacion_destino',
+                'ubicacion_destino'            => 'required|integer|exists:App\Models\Ubicacion,id|different:ubicacion_origen',
+                'articulo_id'                  => 'required|integer',
+            ],
+            /*'PUT' => [
+                'descripcion'                  => 'string|nullable',
+                'modelo'                       => 'string|nullable',
+                'serial'                       => 'string|nullable',
+                'activo'                       => 'string|nullable',
+                'marca'                        => 'integer|exists:App\Models\Marca,id',
+                'subcategoria'                 => 'integer|exists:App\Models\SubCategoriaArticulo,id',
+                //'categoria'                    => 'required|integer|exists:App\Models\CategoriaArticulo,id',
+                'ubicacion_actual'             => 'integer|exists:App\Models\Ubicacion,id',
+                'estado_actual'                => 'integer|exists:App\Models\EstadoArticulo,id',
+            ]*/
+
+        };
     }
 }
