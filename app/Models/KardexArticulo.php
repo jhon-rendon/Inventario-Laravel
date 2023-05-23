@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use JamesDordoy\LaravelVueDatatable\Traits\LaravelVueDatatableTrait;
 
 class KardexArticulo extends Model
 {
-    use HasFactory;
+    use HasFactory, LaravelVueDatatableTrait;
 
     protected $fillable = [
         "modelo",
@@ -21,6 +22,8 @@ class KardexArticulo extends Model
         "categoria_articulos_id",
         "subcategoria_articulos_id"
     ];
+
+
 
     protected $table  = "kardex_articulos";
 
@@ -38,6 +41,11 @@ class KardexArticulo extends Model
     public function kardexUbicacion(){
 
         return $this->hasMany(KardexUbicacion::class,'kardex_articulos','id');
+    }
+
+    public function detalleTrasladoArticulo(){
+
+        return $this->hasMany(DetalleTrasladoArticulo::class,'kardex_articulos_id','id');
     }
 
 }

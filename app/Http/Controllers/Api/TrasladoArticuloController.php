@@ -4,11 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TrasladoArticuloRequest;
+use App\Models\DetalleTrasladoArticulo;
 use App\Models\KardexArticulo;
 use App\Models\KardexUbicacion;
 use App\Models\TrasladoArticulo;
+//use App\Models\TrasladoArticulo;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TrasladoArticuloController extends Controller
 {
@@ -17,9 +21,17 @@ class TrasladoArticuloController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index( Request $request  )
     {
-        //
+        if( !$request->query('paginate') || $request->query('paginate') !== 'false' ){
+            //$kardexArticulos = KardexArticulo::with(['subcategoria.categoria','marcas','kardexUbicacion.ubicacion'])->paginate(10);
+            $trasladoArticulo  = DetalleTrasladoArticulo::with(['articulo'])->paginate(10);
+        }
+        else{
+            //$kardexArticulos = KardexArticulo::with(['subcategoria.categoria','marcas','kardexUbicacion.ubicacion'])->get();
+            $trasladoArticulo  = DetalleTrasladoArticulo::with(['articulo'])->paginate(10);
+        }
+        return $trasladoArticulo;
     }
 
     /**
@@ -41,70 +53,110 @@ class TrasladoArticuloController extends Controller
     public function store(TrasladoArticuloRequest $request)
     {
 
-        $trasladoArticulo                      = new TrasladoArticulo();
-        $trasladoArticulo->ticket              =  $request->input('ticket');
-        $trasladoArticulo->descripcion         =  $request->input('descripcion');
-        $trasladoArticulo->cantidad            =  $request->input('cantidad');
-        $trasladoArticulo->ubicacion_origen    =  $request->input('ubicacion_origen');
-        $trasladoArticulo->ubicacion_destino   =  $request->input('ubicacion_destino');
-        $trasladoArticulo->estado_articulo_id  =  $request->input('estado');
-        $trasladoArticulo->kardex_articulos_id =  $request->input('articulo_id');
-        $trasladoArticulo->usuario_id          =  1;
-        $trasladoArticulo->fecha               = Carbon::now()->toDateString();
-        $trasladoArticulo->hora                = Carbon::now()->toTimeString();
 
-        if( $trasladoArticulo->save() ) {
+        DB::beginTransaction();
 
-            $kardexUbicacionOrigen  =  KardexUbicacion::where('kardex_articulos',$request->input('articulo_id'))
-                                                        ->where('ubicacion_id',$request->input('ubicacion_origen'))->first();
+        try{
 
-            $kardexUbicacionDestino  = KardexUbicacion::where('kardex_articulos',$request->input('articulo_id'))
-                                                        ->where('ubicacion_id',$request->input('ubicacion_destino'))->first();
+            $trasladoArticulo                      = new TrasladoArticulo();
+            $trasladoArticulo->usuario_id          =  1;
+            $trasladoArticulo->fecha               = Carbon::now()->toDateString();
+            $trasladoArticulo->hora                = Carbon::now()->toTimeString();
+            $trasladoArticulo->descripcion         = $request->input('descripcion');
 
-            //Restar Cantidad a la bodega Origen
-            $kardexUbicacionOrigen->cantidad  = ( $kardexUbicacionOrigen->cantidad - $request->input('cantidad') );
-            $kardexUbicacionOrigen->update();
+            if( $trasladoArticulo->save() ){
 
-            if( $kardexUbicacionDestino || count( (array) $kardexUbicacionDestino ) > 0 ){
-                //Actualizar kardex Destino
+                $idTraslado   = $trasladoArticulo->id;
 
-                //Sumar Cantidad a la bodega Destino
-                $kardexUbicacionDestino->cantidad  = ( $kardexUbicacionDestino->cantidad + $request->input('cantidad') );
-                $kardexUbicacionDestino->update();
-            }else{
-                //Crear kardex Destino
-                $kardexUbiacion                    = new KardexUbicacion();
-                $kardexUbiacion->cantidad          = $request->input('cantidad');
-                $kardexUbiacion->ubicacion_id      = $request->input('ubicacion_destino');
-                $kardexUbiacion->kardex_articulos  = $request->input('articulo_id');
-                $kardexUbiacion->save();
+                $detalletrasladoArticulo                         =  new DetalleTrasladoArticulo();
+                $detalletrasladoArticulo->traslados_articulos_id = $idTraslado;
+                $detalletrasladoArticulo->ticket                 =  $request->input('ticket');
+                $detalletrasladoArticulo->descripcion            =  $request->input('descripcion');
+                $detalletrasladoArticulo->cantidad               =  $request->input('cantidad');
+                $detalletrasladoArticulo->ubicacion_origen       =  $request->input('ubicacion_origen');
+                $detalletrasladoArticulo->ubicacion_destino      =  $request->input('ubicacion_destino');
+                $detalletrasladoArticulo->estado_articulo_id     =  $request->input('estado');
+                $detalletrasladoArticulo->kardex_articulos_id    =  $request->input('articulo_id');
+                $detalletrasladoArticulo->usuario_id             =  1;
+                $detalletrasladoArticulo->fecha                  = Carbon::now()->toDateString();
+                $detalletrasladoArticulo->hora                   = Carbon::now()->toTimeString();
+
+                if( $detalletrasladoArticulo->save() ) {
+
+                    $kardexUbicacionOrigen  =  KardexUbicacion::where('kardex_articulos',$request->input('articulo_id'))
+                                                                ->where('ubicacion_id',$request->input('ubicacion_origen'))->first();
+
+                    $kardexUbicacionDestino  = KardexUbicacion::where('kardex_articulos',$request->input('articulo_id'))
+                                                                ->where('ubicacion_id',$request->input('ubicacion_destino'))->first();
+
+                    //Restar Cantidad a la bodega Origen
+                    $kardexUbicacionOrigen->cantidad  = ( $kardexUbicacionOrigen->cantidad - $request->input('cantidad') );
+                    $kardexUbicacionOrigen->update();
+
+                    if( $kardexUbicacionDestino || count( (array) $kardexUbicacionDestino ) > 0 ){
+                        //Actualizar kardex Destino
+
+                        //Sumar Cantidad a la bodega Destino
+                        $kardexUbicacionDestino->cantidad  = ( $kardexUbicacionDestino->cantidad + $request->input('cantidad') );
+                        $kardexUbicacionDestino->update();
+                    }else{
+                        //Crear kardex Destino
+                        $kardexUbiacion                    = new KardexUbicacion();
+                        $kardexUbiacion->cantidad          = $request->input('cantidad');
+                        $kardexUbiacion->ubicacion_id      = $request->input('ubicacion_destino');
+                        $kardexUbiacion->kardex_articulos  = $request->input('articulo_id');
+                        $kardexUbiacion->save();
+
+                    }
+
+                    $kardexArticulo = KardexArticulo::where('id',$request->input('articulo_id'))->first();
+                    $kardexArticulo->ubicacion_actual = $request->input('ubicacion_destino');
+                    $kardexArticulo->estado_actual    = $request->input('estado');
+                    $kardexArticulo->update();
+
+                    // Commit de la transacción si todo se insertó correctamente
+                    DB::commit();
+                    return response()->json([
+                        "success" => true,
+                        "kardexUbicacionDestino" => $kardexUbicacionDestino,
+                        "kardexUbicacionORIGEN"  => $kardexUbicacionOrigen,
+                        "Nuevo Destino"          => ( isset( $kardexUbiacion))? $kardexUbiacion : null,
+                        "message" => "¡Registro del Traslado exitoso!",
+                    ]);
+
+                }
+
+                DB::rollBack();
+                return response()->json([
+                    "success" => false,
+                    "message" => "Error al registrar el detalle del traslado",
+                    "errors"  => "Error al registrar el detalle del traslado",
+                ],500);
 
             }
 
-            $kardexArticulo = KardexArticulo::where('id',$request->input('articulo_id'))->first();
-            $kardexArticulo->ubicacion_actual = $request->input('ubicacion_destino');
-            $kardexArticulo->estado_actual    = $request->input('estado');
-            $kardexArticulo->update();
-
-
-            return response()->json([
-                "success" => true,
-                "kardexUbicacionDestino" => $kardexUbicacionDestino,
-                "kardexUbicacionORIGEN"  => $kardexUbicacionOrigen,
-                "Nuevo Destino"          => ( isset( $kardexUbiacion))? $kardexUbiacion : null,
-                "message" => "¡Registro del Traslado exitoso!",
-            ]);
-
+            else{
+                DB::rollBack();
+                return response()->json([
+                    "success" => false,
+                    "message" => "Error al registrar el traslado",
+                    "errosr"  => "Error al registrar el traslado",
+                ],500);
+            }
         }
 
-        return response()->json([
-            "success" => false,
-            "message" => "Error al registrar el traslado",
-            "error"   => "Error al registrar el traslado",
+        catch (Exception $e) {
+            DB::rollBack();
+            // Ocurrió una excepción general
+            return response()->json([
+                "success" => false,
+                "message" => "Error al registrar el Traslado",
+                "errors"  => $e->getMessage()
+            ],500);
+        }
 
-        ]);
 
-    }
+ }
 
     /**
      * Display the specified resource.

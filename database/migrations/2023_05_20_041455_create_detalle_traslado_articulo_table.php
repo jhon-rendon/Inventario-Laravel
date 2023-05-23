@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTrasladosArticulosTable extends Migration
+class CreateDetalleTrasladoArticuloTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateTrasladosArticulosTable extends Migration
      */
     public function up()
     {
-        Schema::create('traslados_articulos', function (Blueprint $table) {
+        Schema::create('detalle_traslado_articulo', function (Blueprint $table) {
             $table->id();
             $table->date('fecha')->require();
             $table->string('hora')->require();
@@ -27,7 +27,8 @@ class CreateTrasladosArticulosTable extends Migration
             $table->integer('detalle_pedido_id')->nullable()->comment("Si el traslado se realiza por medio de una solicitud de pedido, en este campo se almacena el id de la solicitud o de lo contrario sera null");
 
             $table->foreignId('estado_articulo_id')->references('id')->on('estado_articulo');
-            $table->foreignId('kardex_articulos_id')->references('id')->on('kardex_articulos');
+            //$table->foreignId('kardex_articulos_id')->references('id')->on('kardex_articulos');
+            $table->foreignId('traslados_articulos_id')->references('id')->on('traslados_articulos');
 
             $table->timestamps();
         });
@@ -40,6 +41,6 @@ class CreateTrasladosArticulosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('traslados_articulos');
+        Schema::dropIfExists('detalle_traslado_articulo');
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CategoriaArticuloController;
+use App\Http\Controllers\Api\DetalleTrasladoArticuloController;
 use App\Http\Controllers\Api\EstadoArticuloController;
 use App\Http\Controllers\Api\KardexArticuloController;
 use App\Http\Controllers\Api\MarcaController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Api\TipoUbicacionController;
 use App\Http\Controllers\Api\TrasladoArticuloController;
 use App\Http\Controllers\Api\UbicacionController;
 use App\Http\Controllers\Api\KardexUbicacionController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -55,7 +57,7 @@ Route::post('/auth/register', [UserController::class, 'register']);
     Route::apiResource("/traslado-articulos",TrasladoArticuloController::class);
 
     Route::post("/kardex-ubicacion/valid-articulo",[KardexUbicacionController::class,'validKardexUbicacionArticulo'])->name('kardex-ubicacion.valid');
-
+    Route::get("/detalle-traslado/articulo/{id}",[DetalleTrasladoArticuloController::class,"detalleTrasladoByArticulo"]);
 
 
 //});

@@ -9,19 +9,7 @@ class TrasladoArticulo extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'ticket',
-        'descripcion',
-        'cantidad',
-        'ubicacion_origen',
-        'ubicacion_destino',
-        'usuario_id',
-        'detalle_pedido_id',
-        'estado_articulo_id',
-        'kardex_articulos_id',
-        'fecha',
-        'hora'
-    ];
+    protected $fillable = ['fecha','hora','descripcion','usuario_id'];
 
-    protected $table  = 'traslados_articulos';
+    protected $table    = 'traslados_articulos';
 }

@@ -181,6 +181,7 @@ return [
 
         Spatie\Permission\PermissionServiceProvider::class,
         PHPOpenSourceSaver\JWTAuth\Providers\LaravelServiceProvider::class,
+        JamesDordoy\LaravelVueDatatable\Providers\LaravelVueDatatableServiceProvider::class,
 
     ],
 
