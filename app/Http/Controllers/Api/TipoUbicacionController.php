@@ -25,10 +25,10 @@ class TipoUbicacionController extends Controller
     public function index(Request $request )
     {
         if( !$request->query('paginate') || $request->query('paginate') !== 'false' ){
-            $tipoUbicacion = TipoUbicacion::orderBy('tipo', 'asc')->paginate(10);
+            $tipoUbicacion = TipoUbicacion::with('ubicacion')->orderBy('tipo', 'asc')->paginate(10);
         }
         else{
-            $tipoUbicacion = TipoUbicacion::orderBy('tipo', 'asc')->get(["id","tipo"]);
+            $tipoUbicacion = TipoUbicacion::with('ubicacion')->orderBy('tipo', 'asc')->get(["id","tipo"]);
         }
 
         return $tipoUbicacion;

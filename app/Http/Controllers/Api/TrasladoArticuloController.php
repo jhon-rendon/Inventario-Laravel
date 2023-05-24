@@ -109,10 +109,13 @@ class TrasladoArticuloController extends Controller
 
                     }
 
-                    $kardexArticulo = KardexArticulo::where('id',$request->input('articulo_id'))->first();
-                    $kardexArticulo->ubicacion_actual = $request->input('ubicacion_destino');
-                    $kardexArticulo->estado_actual    = $request->input('estado');
-                    $kardexArticulo->update();
+                    $kardexArticulo = KardexArticulo::with(['subcategoria.categoria'])->where('id',$request->input('articulo_id'))->first();
+                    //$kardexArticulo = KardexArticulo::where('id',$request->input('articulo_id'))->first();
+                    if( $kardexArticulo->subcategoria->tipo_cantidad == 'unidad'){
+                         $kardexArticulo->ubicacion_actual = $request->input('ubicacion_destino');
+                         $kardexArticulo->estado_actual    = $request->input('estado');
+                         $kardexArticulo->update();
+                    }
 
                     // Commit de la transacción si todo se insertó correctamente
                     DB::commit();

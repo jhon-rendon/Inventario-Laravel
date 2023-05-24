@@ -103,6 +103,28 @@ class KardexArticuloController extends Controller
         return $kardexArticulos->paginate($length);
     }
 
+    public function getArticulosDisponiblesByCategoria( Request $request ){
+
+        $subcategoria = $request->input('subcategoria');
+        $ubicacion    = $request->input('ubicacion');
+
+        /*$kardexArticulos = KardexArticulo::with(['marcas','kardexUbicacion'=> function($query) use($ubicacion){
+                                         $query->withW('ubicacion.id','=',$ubicacion)
+                                        ->whereRaw('ubicacion.cantidad','>',0);
+                                        },'kardexUbicacion.ubicacion'])
+                                        ->where('subcategoria_articulos_id','=',$subcategoria)->get();*/
+
+    $kardexArticulos = KardexArticulo::with('kardexUbicacion')
+                                        ->whereHas('kardexUbicacion', function($query) use($ubicacion) {
+                                            $query->where('cantidad','>', 0)->whereHas('ubicacion', function ($query) use($ubicacion)  {
+                                                $query->where('id', $ubicacion);
+                                            });
+                                        })->where('subcategoria_articulos_id','=',$subcategoria)->get();
+        return $kardexArticulos;
+        //return $subcategoria;
+
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -125,20 +147,48 @@ class KardexArticuloController extends Controller
 
         DB::beginTransaction();
         try{
-            $kardexArticulos = new KardexArticulo();
-            $kardexArticulos->modelo                    =  $request->input('modelo');
-            $kardexArticulos->descripcion               =  $request->input('descripcion');
-            $kardexArticulos->activo                    =  $request->input('activo');
-            $kardexArticulos->serial                    =  $request->input('serial');
-            $kardexArticulos->marcas_id                 =  $request->input('marca');
-            $kardexArticulos->subcategoria_articulos_id =  $request->input('subcategoria');
-            $kardexArticulos->ubicacion_actual          = $ubicacionActual;
-            $kardexArticulos->estado_actual             = $estadoActual;
+            /* $validArticulo = KardexArticulo::where('subcategoria_articulos_id','=',$request->input('subcategoria'))
+                                     ->where('marcas_id','=',$request->input('marca'));
+
+            if( ( $request->input('tipo_cantidad') === 'unidad' ) OR
+                  $validArticulo->count() === 0 && $request->input('tipo_cantidad') === 'lote'){
+
+                //Crear Nuevo Registro
+                $kardexArticulos = new KardexArticulo();
+                $kardexArticulos->modelo                    =  $request->input('modelo');
+                $kardexArticulos->descripcion               =  $request->input('descripcion');
+                $kardexArticulos->activo                    =  $request->input('activo');
+                $kardexArticulos->serial                    =  $request->input('serial');
+                $kardexArticulos->marcas_id                 =  $request->input('marca');
+                $kardexArticulos->subcategoria_articulos_id =  $request->input('subcategoria');
+                $kardexArticulos->ubicacion_actual          =  $ubicacionActual;
+                $kardexArticulos->estado_actual             =  $estadoActual;
+                $kardexArticulos->save();
+
+                $id_kardex_articulo = $kardexArticulos->id;
+
+            }else{
+                $id_kardex_articulo = $validArticulo->get()->id;
+            }*/
+
+                $kardexArticulos = new KardexArticulo();
+                $kardexArticulos->modelo                    =  $request->input('modelo');
+                $kardexArticulos->descripcion               =  $request->input('descripcion');
+                $kardexArticulos->activo                    =  $request->input('activo');
+                $kardexArticulos->serial                    =  $request->input('serial');
+                $kardexArticulos->marcas_id                 =  $request->input('marca');
+                $kardexArticulos->subcategoria_articulos_id =  $request->input('subcategoria');
+                $kardexArticulos->ubicacion_actual          =  $ubicacionActual;
+                $kardexArticulos->estado_actual             =  $estadoActual;
+                $kardexArticulos->save();
+
+                $id_kardex_articulo = $kardexArticulos->id;
 
 
-            if( $kardexArticulos->save() ) {
-                if( $kardexArticulos->id ){
-                    $idArticulo  = $kardexArticulos->id;
+
+            //if( $kardexArticulos->save() ||  ) {
+                if( $id_kardex_articulo ){
+                    $idArticulo  = $id_kardex_articulo;
 
                     $kardexUbicacion                       = new KardexUbicacion();
                     $kardexUbicacion->cantidad             = $cantidad;
@@ -189,7 +239,7 @@ class KardexArticuloController extends Controller
 
 
                 }
-            }
+            /*}
             else{
                 DB::rollBack();
                 return response()->json([
@@ -197,7 +247,7 @@ class KardexArticuloController extends Controller
                     "message" => "Error al registrar el Articulo",
                     "errors"  => "Error al registrar el Articulo",
                 ],500);
-            }
+            }*/
         }
         /*catch(QueryException $e){
             // Revertir la transacción y eliminar el traslado completo
