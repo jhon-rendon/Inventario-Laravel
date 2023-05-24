@@ -145,13 +145,25 @@ class KardexArticuloController extends Controller
             $estadoActual    = $request->input('estado');
         }
 
+        $tipo = '';
         DB::beginTransaction();
         try{
-            /* $validArticulo = KardexArticulo::where('subcategoria_articulos_id','=',$request->input('subcategoria'))
-                                     ->where('marcas_id','=',$request->input('marca'));
+             $validArticulo = KardexArticulo::where('subcategoria_articulos_id','=',$request->input('subcategoria'))
+                                     ->where('marcas_id','=',$request->input('marca'))->first();
+
+
+            if( $validArticulo ){
+
+                $id_kardex_articulo = $validArticulo->id;
+                $kardexUbicacion    = KardexUbicacion::where('kardex_articulos','=',$id_kardex_articulo)
+                                                         ->where('ubicacion_id','=',$request->input('ubicacion_destino'))->first();
+            }else{
+                $kardexUbicacion = null;
+            }
+
 
             if( ( $request->input('tipo_cantidad') === 'unidad' ) OR
-                  $validArticulo->count() === 0 && $request->input('tipo_cantidad') === 'lote'){
+                ( !$validArticulo && $request->input('tipo_cantidad') === 'lote' ) ){
 
                 //Crear Nuevo Registro
                 $kardexArticulos = new KardexArticulo();
@@ -167,11 +179,37 @@ class KardexArticuloController extends Controller
 
                 $id_kardex_articulo = $kardexArticulos->id;
 
-            }else{
-                $id_kardex_articulo = $validArticulo->get()->id;
-            }*/
+                //Crear Kardex Ubicacion
+                $kardexUbicacion                       = new KardexUbicacion();
+                $kardexUbicacion->cantidad             = $cantidad;
+                $kardexUbicacion->ubicacion_id         = $request->input('ubicacion_destino');
+                $kardexUbicacion->kardex_articulos     = $id_kardex_articulo;
+                $kardexUbicacion->save();
 
-                $kardexArticulos = new KardexArticulo();
+                $tipo = 'insert';
+
+            }else{
+
+                if( !$kardexUbicacion && $validArticulo ){
+
+                    //Crear Kardex Ubicacion
+                    $kardexUbicacion                       = new KardexUbicacion();
+                    $kardexUbicacion->cantidad             = $cantidad;
+                    $kardexUbicacion->ubicacion_id         = $request->input('ubicacion_destino');
+                    $kardexUbicacion->kardex_articulos     = $id_kardex_articulo;
+                    $kardexUbicacion->save();
+                    $tipo = 'insert';
+                }
+                else{
+                     //Actualizar  Kardex Ubicacion
+                    $kardexUbicacion->cantidad  = $kardexUbicacion->cantidad + $cantidad;
+                    $kardexUbicacion->update();
+                }
+
+                $tipo = 'update';
+            }
+
+                /*$kardexArticulos = new KardexArticulo();
                 $kardexArticulos->modelo                    =  $request->input('modelo');
                 $kardexArticulos->descripcion               =  $request->input('descripcion');
                 $kardexArticulos->activo                    =  $request->input('activo');
@@ -180,22 +218,13 @@ class KardexArticuloController extends Controller
                 $kardexArticulos->subcategoria_articulos_id =  $request->input('subcategoria');
                 $kardexArticulos->ubicacion_actual          =  $ubicacionActual;
                 $kardexArticulos->estado_actual             =  $estadoActual;
-                $kardexArticulos->save();
+                $kardexArticulos->save();*/
 
-                $id_kardex_articulo = $kardexArticulos->id;
+               // $id_kardex_articulo = $kardexArticulos->id;
 
 
 
             //if( $kardexArticulos->save() ||  ) {
-                if( $id_kardex_articulo ){
-                    $idArticulo  = $id_kardex_articulo;
-
-                    $kardexUbicacion                       = new KardexUbicacion();
-                    $kardexUbicacion->cantidad             = $cantidad;
-                    $kardexUbicacion->ubicacion_id         = $request->input('ubicacion_destino');
-                    $kardexUbicacion->kardex_articulos     = $idArticulo;
-                    $kardexUbicacion->save();
-
 
                     $trasladoArticulo                      = new TrasladoArticulo();
                     $trasladoArticulo->usuario_id          =  1;
@@ -209,13 +238,13 @@ class KardexArticuloController extends Controller
 
                         $detalleTrasladoArticulo                         = new DetalleTrasladoArticulo();
                         $detalleTrasladoArticulo->traslados_articulos_id = $idTraslado;
-                        $detalleTrasladoArticulo->estado_articulo_id     = $request->input('estado');
+                        $detalleTrasladoArticulo->estado_articulo_id     = ( $estadoActual ) ? $request->input('estado') : null;
                         $detalleTrasladoArticulo->cantidad               = $request->input('cantidad');
                         $detalleTrasladoArticulo->ubicacion_origen       = $request->input('ubicacion_origen');
                         $detalleTrasladoArticulo->ubicacion_destino      = $request->input('ubicacion_destino');
                         $detalleTrasladoArticulo->ticket                 = $request->input('ticket');
                         $detalleTrasladoArticulo->usuario_id             = 1;
-                        $detalleTrasladoArticulo->kardex_articulos_id    = $idArticulo;
+                        $detalleTrasladoArticulo->kardex_articulos_id    = $id_kardex_articulo;
                         $detalleTrasladoArticulo->fecha                  = Carbon::now()->toDateString();
                         $detalleTrasladoArticulo->hora                   = Carbon::now()->toTimeString();
                         $detalleTrasladoArticulo->save();
@@ -228,17 +257,10 @@ class KardexArticuloController extends Controller
                         ]);
 
                     }
-                    else{
-                        DB::rollBack();
-                        return response()->json([
-                                "success" => false,
-                                "message" => "Error al registrar el Traslado del Articulo",
-                                "errors"   => "Error al registrar el Traslado del Articulo",
-                        ],500);
-                    }
 
 
-                }
+
+
             /*}
             else{
                 DB::rollBack();
@@ -266,7 +288,9 @@ class KardexArticuloController extends Controller
             return response()->json([
                 "success" => false,
                 "message" => "Error al registrar el Articulo",
-                "errors"  => $e->getMessage()
+                "errors"  => $e->getMessage(),
+                "tipo" => $tipo
+
             ],500);
         }
 
