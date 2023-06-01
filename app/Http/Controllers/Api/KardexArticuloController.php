@@ -114,7 +114,7 @@ class KardexArticuloController extends Controller
                                         },'kardexUbicacion.ubicacion'])
                                         ->where('subcategoria_articulos_id','=',$subcategoria)->get();*/
 
-    $kardexArticulos = KardexArticulo::with('kardexUbicacion')
+    $kardexArticulos = KardexArticulo::with(['kardexUbicacion','marcas'])
                                         ->whereHas('kardexUbicacion', function($query) use($ubicacion) {
                                             $query->where('cantidad','>', 0)->whereHas('ubicacion', function ($query) use($ubicacion)  {
                                                 $query->where('id', $ubicacion);
@@ -145,10 +145,9 @@ class KardexArticuloController extends Controller
             $estadoActual    = $request->input('estado');
         }
 
-        $tipo = '';
         DB::beginTransaction();
         try{
-             $validArticulo = KardexArticulo::where('subcategoria_articulos_id','=',$request->input('subcategoria'))
+             /*$validArticulo = KardexArticulo::where('subcategoria_articulos_id','=',$request->input('subcategoria'))
                                      ->where('marcas_id','=',$request->input('marca'))->first();
 
 
@@ -186,7 +185,6 @@ class KardexArticuloController extends Controller
                 $kardexUbicacion->kardex_articulos     = $id_kardex_articulo;
                 $kardexUbicacion->save();
 
-                $tipo = 'insert';
 
             }else{
 
@@ -198,7 +196,6 @@ class KardexArticuloController extends Controller
                     $kardexUbicacion->ubicacion_id         = $request->input('ubicacion_destino');
                     $kardexUbicacion->kardex_articulos     = $id_kardex_articulo;
                     $kardexUbicacion->save();
-                    $tipo = 'insert';
                 }
                 else{
                      //Actualizar  Kardex Ubicacion
@@ -206,10 +203,9 @@ class KardexArticuloController extends Controller
                     $kardexUbicacion->update();
                 }
 
-                $tipo = 'update';
-            }
+            }*/
 
-                /*$kardexArticulos = new KardexArticulo();
+                $kardexArticulos = new KardexArticulo();
                 $kardexArticulos->modelo                    =  $request->input('modelo');
                 $kardexArticulos->descripcion               =  $request->input('descripcion');
                 $kardexArticulos->activo                    =  $request->input('activo');
@@ -218,9 +214,16 @@ class KardexArticuloController extends Controller
                 $kardexArticulos->subcategoria_articulos_id =  $request->input('subcategoria');
                 $kardexArticulos->ubicacion_actual          =  $ubicacionActual;
                 $kardexArticulos->estado_actual             =  $estadoActual;
-                $kardexArticulos->save();*/
+                $kardexArticulos->save();
 
-               // $id_kardex_articulo = $kardexArticulos->id;
+                $id_kardex_articulo = $kardexArticulos->id;
+
+                 //Crear Kardex Ubicacion
+                 $kardexUbicacion                       = new KardexUbicacion();
+                 $kardexUbicacion->cantidad             = $cantidad;
+                 $kardexUbicacion->ubicacion_id         = $request->input('ubicacion_destino');
+                 $kardexUbicacion->kardex_articulos     = $id_kardex_articulo;
+                 $kardexUbicacion->save();
 
 
 
@@ -238,7 +241,7 @@ class KardexArticuloController extends Controller
 
                         $detalleTrasladoArticulo                         = new DetalleTrasladoArticulo();
                         $detalleTrasladoArticulo->traslados_articulos_id = $idTraslado;
-                        $detalleTrasladoArticulo->estado_articulo_id     = ( $estadoActual ) ? $request->input('estado') : null;
+                        $detalleTrasladoArticulo->estado_articulo_id     = $request->input('estado');
                         $detalleTrasladoArticulo->cantidad               = $request->input('cantidad');
                         $detalleTrasladoArticulo->ubicacion_origen       = $request->input('ubicacion_origen');
                         $detalleTrasladoArticulo->ubicacion_destino      = $request->input('ubicacion_destino');
@@ -288,8 +291,7 @@ class KardexArticuloController extends Controller
             return response()->json([
                 "success" => false,
                 "message" => "Error al registrar el Articulo",
-                "errors"  => $e->getMessage(),
-                "tipo" => $tipo
+                "errors"  => $e->getMessage()
 
             ],500);
         }

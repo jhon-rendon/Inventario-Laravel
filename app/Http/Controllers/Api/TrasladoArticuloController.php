@@ -50,13 +50,115 @@ class TrasladoArticuloController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TrasladoArticuloRequest $request)
+    public function store(TrasladoArticuloRequest $request )//TrasladoArticuloRequest $request)
     {
 
 
+        /*return response()->json([
+            //"request" => $request->all(),
+            "gettype" =>  $request->articulo,
+            "articulo" => gettype($request->ubicacion)
+            //"cantidad" => $request->input("articulo")->cantidad
+        ]);*/
+
+        return;
         DB::beginTransaction();
 
-        try{
+        try {
+
+            $trasladoArticulo                      = new TrasladoArticulo();
+            $trasladoArticulo->usuario_id          =  1;
+            $trasladoArticulo->fecha               = Carbon::now()->toDateString();
+            $trasladoArticulo->hora                = Carbon::now()->toTimeString();
+            $trasladoArticulo->descripcion         = '';
+
+
+            if( $trasladoArticulo->save() ){
+
+                $idTraslado        = $trasladoArticulo->id;
+                $ubicacion_destino = $request->input('ubicacion_destino');
+
+                foreach ( $request->articulo as $articulo ) {
+
+                    $articulo_id   = $articulo['articulo_id'];
+
+                    $detalletrasladoArticulo                         =  new DetalleTrasladoArticulo();
+                    $detalletrasladoArticulo->traslados_articulos_id = $idTraslado;
+                    $detalletrasladoArticulo->ticket                 =  $articulo['ticket'];
+                    $detalletrasladoArticulo->descripcion            =  $articulo['descripcion'];
+                    $detalletrasladoArticulo->cantidad               =  $articulo['cantidad'];
+                    $detalletrasladoArticulo->ubicacion_origen       =  $articulo['ubicacion_origen'];
+                    $detalletrasladoArticulo->ubicacion_destino      =  $ubicacion_destino;
+                    $detalletrasladoArticulo->estado_articulo_id     =  $articulo['estado'];
+                    $detalletrasladoArticulo->kardex_articulos_id    =  $articulo_id;
+                    $detalletrasladoArticulo->usuario_id             =  1;
+                    $detalletrasladoArticulo->fecha                  =  Carbon::now()->toDateString();
+                    $detalletrasladoArticulo->hora                   =  Carbon::now()->toTimeString();
+
+                    if( $detalletrasladoArticulo->save() ) {
+
+                        $kardexUbicacionOrigen  =  KardexUbicacion::where('kardex_articulos',$articulo_id)
+                                                                    ->where('ubicacion_id',$articulo['ubicacion_origen'])->first();
+
+                        $kardexUbicacionDestino  = KardexUbicacion::where('kardex_articulos',$articulo_id)
+                                                                    ->where('ubicacion_id',$ubicacion_destino)->first();
+
+                        //Restar Cantidad a la bodega Origen
+                        $kardexUbicacionOrigen->cantidad  = ( $kardexUbicacionOrigen->cantidad - $articulo['cantidad']);
+                        $kardexUbicacionOrigen->update();
+
+                        if( $kardexUbicacionDestino || count( (array) $kardexUbicacionDestino ) > 0 ){
+                            //Actualizar kardex Destino
+
+                            //Sumar Cantidad a la bodega Destino
+                            $kardexUbicacionDestino->cantidad  = ( $kardexUbicacionDestino->cantidad + $articulo['cantidad'] );
+                            $kardexUbicacionDestino->update();
+                        }else{
+                            //Crear kardex Destino
+                            $kardexUbiacion                    = new KardexUbicacion();
+                            $kardexUbiacion->cantidad          = $articulo['cantidad'];
+                            $kardexUbiacion->ubicacion_id      = $ubicacion_destino;
+                            $kardexUbiacion->kardex_articulos  = $articulo_id;
+                            $kardexUbiacion->save();
+
+                        }
+
+                        $kardexArticulo = KardexArticulo::with(['subcategoria.categoria'])->where('id',$articulo_id)->first();
+                        //$kardexArticulo = KardexArticulo::where('id',$request->input('articulo_id'))->first();
+                        if( $kardexArticulo->subcategoria->tipo_cantidad == 'unidad'){
+                            $kardexArticulo->ubicacion_actual = $ubicacion_destino;
+                            $kardexArticulo->estado_actual    = $request->input('estado');
+                            $kardexArticulo->update();
+                        }
+                    }
+
+                }//fin foreach
+                // Commit de la transacción si todo se insertó correctamente
+                DB::commit();
+                return response()->json([
+                    "success" => true,
+                    "message" => "¡Registro del Traslado exitoso!",
+                ]);
+
+            }//fin if
+
+
+        }   catch (Exception $e) {
+            DB::rollBack();
+            // Ocurrió una excepción general
+            return response()->json([
+                "success" => false,
+                "message" => "Error al registrar el Traslado",
+                "errors"  => $e->getMessage()
+            ],500);
+        }
+
+
+
+
+
+
+        /*try{
 
             $trasladoArticulo                      = new TrasladoArticulo();
             $trasladoArticulo->usuario_id          =  1;
@@ -156,7 +258,7 @@ class TrasladoArticuloController extends Controller
                 "message" => "Error al registrar el Traslado",
                 "errors"  => $e->getMessage()
             ],500);
-        }
+        }*/
 
 
  }

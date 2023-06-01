@@ -25,11 +25,15 @@ class TrasladoArticuloRequest extends FormRequest
     {
         return match( $this->method() ){
             'POST'=> [
-                'cantidad'                     => 'required|integer',
-                'estado'                       => 'required|integer',
-                'ubicacion_origen'             => 'required|integer|exists:App\Models\Ubicacion,id|different:ubicacion_destino',
+                'articulo' => 'required|array',
+                //'cantidad'                     => 'required|integer',
+                //'estado'                       => 'required|integer',
+                'articulo.*.ubicacion_origen'  => 'required|integer|exists:App\Models\Ubicacion,id|different:ubicacion_destino',
                 'ubicacion_destino'            => 'required|integer|exists:App\Models\Ubicacion,id|different:ubicacion_origen',
-                'articulo_id'                  => 'required|integer',
+                'articulo.*.articulo_id'       => 'required|integer',
+                'articulo.*.cantidad'          => 'required|integer|min:1',
+                'articulo.*.estado'            => 'required|integer',
+                'articulo.*.ticket'            => 'integer',
             ],
             /*'PUT' => [
                 'descripcion'                  => 'string|nullable',
@@ -44,5 +48,15 @@ class TrasladoArticuloRequest extends FormRequest
             ]*/
 
         };
+    }
+
+    public function messages(){
+
+        return [
+            'articulo.*.cantidad.required' => 'La cantidad es obligatoria',
+            'articulo.*.cantidad.integer'  => 'La cantidad debe ser numérica',
+            'articulo.*.cantidad.min'      => 'La cantidad debe ser minino 1',
+
+        ];
     }
 }
