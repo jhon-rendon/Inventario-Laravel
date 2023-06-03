@@ -13,10 +13,9 @@ use App\Models\KardexUbicacion;
 use App\Models\TrasladoArticulo;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use JamesDordoy\LaravelVueDatatable\Http\Resources\DataTableCollectionResource;
+
 
 class KardexArticuloController extends Controller
 {
@@ -114,7 +113,7 @@ class KardexArticuloController extends Controller
                                         },'kardexUbicacion.ubicacion'])
                                         ->where('subcategoria_articulos_id','=',$subcategoria)->get();*/
 
-    $kardexArticulos = KardexArticulo::with(['kardexUbicacion','marcas'])
+        $kardexArticulos = KardexArticulo::with(['kardexUbicacion','marcas'])
                                         ->whereHas('kardexUbicacion', function($query) use($ubicacion) {
                                             $query->where('cantidad','>', 0)->whereHas('ubicacion', function ($query) use($ubicacion)  {
                                                 $query->where('id', $ubicacion);
@@ -123,6 +122,20 @@ class KardexArticuloController extends Controller
         return $kardexArticulos;
         //return $subcategoria;
 
+    }
+
+    public function getArticulosByUbicacion( Request $request ){
+
+        $ubicacion    = $request->ubicacion;
+
+        $kardexArticulos = KardexArticulo::with(['kardexUbicacion' =>
+                        function($query) use($ubicacion) {
+                            $query->where('cantidad','>', 0)->where('ubicacion_id','=',$ubicacion);
+                        },'marcas','subcategoria.categoria'])->get();
+            /*->whereHas('kardexUbicacion', function($query) use($ubicacion) {
+                $query->where('cantidad','>', 0)->where('ubicacion_id','=',$ubicacion);
+            })*///->get();
+        return $kardexArticulos;
     }
 
 

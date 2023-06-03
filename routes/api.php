@@ -56,6 +56,8 @@ Route::post('/auth/register', [UserController::class, 'register']);
     Route::apiResource("/kardex-articulos",KardexArticuloController::class);
     Route::apiResource("/traslado-articulos",TrasladoArticuloController::class);
 
+
+    Route::get("/kardex-articulos-ubicacion/listar",[KardexArticuloController::class,'getArticulosByUbicacion']);
     Route::get("/kardex-articulos-disponibles",[KardexArticuloController::class,'getArticulosDisponiblesByCategoria']);
 
 

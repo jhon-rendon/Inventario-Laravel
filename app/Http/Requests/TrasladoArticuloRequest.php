@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class TrasladoArticuloRequest extends FormRequest
 {
@@ -15,6 +16,14 @@ class TrasladoArticuloRequest extends FormRequest
     public function authorize()
     {
         return true;
+    }
+
+
+    protected function prepareForValidation()
+    {
+        $this->merge([
+        'slug' => Str::slug($this->slug),
+        ]);
     }
 
     /**
@@ -32,13 +41,13 @@ class TrasladoArticuloRequest extends FormRequest
                 //'cantidad'                     => 'required|integer',
                 //'estado'                       => 'required|integer',
                 'articulo.*.ubicacion_origen'  => 'required|integer|exists:App\Models\Ubicacion,id|different:ubicacion_destino',
-                'ubicacion_destino'            => 'required|integer|exists:App\Models\Ubicacion,id|different:ubicacion_origen',
+                //'ubicacion_destino'            => 'required|integer|exists:App\Models\Ubicacion,id|different:articulo.*.ubicacion_origen',
                 'articulo.*.articulo_id'       => ['required','integer'],
                 'articulo.*.cantidad'          => ['required','integer','min:1',
 
                     function ($attribute, $valueCantidad, $fail) {
-                        $table = 'kardex_ubicacion'; // Reemplaza 'nombre_tabla' con el nombre de tu tabla
-                        $index     = explode('.',$attribute)[1];
+                        $table        = 'kardex_ubicacion'; // Reemplaza 'nombre_tabla' con el nombre de tu tabla
+                        $index        = explode('.',$attribute)[1];
                         $ubicacion    = $this->input('articulo.*.ubicacion_origen');
                         $articulo_id  = $this->input('articulo.*.articulo_id');
 
@@ -55,8 +64,8 @@ class TrasladoArticuloRequest extends FormRequest
                         }
                     }
                 ],
-                'articulo.*.estado'            => 'required|integer',
-                'articulo.*.ticket'            => 'integer',
+                //'articulo.*.estado'            => 'required|integer',
+                'articulo.*.ticket'            => 'nullable|integer',
             ],
             /*'PUT' => [
                 'descripcion'                  => 'string|nullable',
@@ -82,10 +91,14 @@ class TrasladoArticuloRequest extends FormRequest
             'articulo.*.ticket.integer'       => 'El ticket debe ser numérico',
             'articulo.*.articulo_id.required' => 'Se debe enviar un articulo valido',
             'articulo.*.articulo_id.integer'  => 'El articulo es obligatorio',
-
+            'articulo.*.ubicacion_origen.different'  => 'El origen y destino deben ser diferentes',
 
 
         ];
     }
+
+
+
+
 
 }

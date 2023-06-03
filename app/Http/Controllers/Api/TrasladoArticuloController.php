@@ -61,7 +61,6 @@ class TrasladoArticuloController extends Controller
             //"cantidad" => $request->input("articulo")->cantidad
         ]);*/
 
-        return;
         DB::beginTransaction();
 
         try {

@@ -31,7 +31,8 @@ class SubcategoriaArticuloRequest extends FormRequest
     {
         return match( $this->method() ){
             'POST'=> [
-                'nombre'       => 'required|max:255|unique:subcategoria_articulos',
+                //'nombre'       => 'required|max:255|unique:subcategoria_articulos',
+                'nombre'       => 'required|max:255',
                 'descripcion'  => 'string|nullable',
                 'categoria'    => 'required|integer|exists:App\Models\CategoriaArticulo,id',
                 'tipo_cantidad'=> 'required|string|in:lote,unidad'
@@ -39,7 +40,8 @@ class SubcategoriaArticuloRequest extends FormRequest
             ],
             'PUT' => [
                 //'id'          => 'required|int|exists:articulos,id',
-                'nombre'      =>  'string|unique:subcategoria_articulos,nombre,'.$this->subcategoria_articulo.'',
+                //'nombre'      =>  'string|unique:subcategoria_articulos,nombre,'.$this->subcategoria_articulo.'',
+                'nombre'      =>  'string',
                 'descripcion' =>  'string|nullable',
                 'categoria'    => 'integer|exists:App\Models\CategoriaArticulo,id',
                 'tipo_cantidad'=> 'string|in:lote,unidad'
